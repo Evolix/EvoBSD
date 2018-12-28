@@ -1,0 +1,63 @@
+---
+- name: Customize root's .profile
+  copy:
+    src: profile
+    dest: /root/.profile
+  tags:
+    - admin
+    - dotfiles
+
+- name: Copy vim default configuration
+  copy:
+    src: vimrc
+    dest: /root/.vimrc
+    mode: "0644"
+  tags:
+    - admin
+    - dotfiles
+    - vim
+
+- name: Customize .kshrc environment file
+  copy:
+    src: kshrc
+    dest: /root/.kshrc
+  tags:
+    - admin
+    - dotfiles
+
+- name: Change default .profile skeleton
+  copy:
+    src: profile
+    dest: /etc/skel/.profile
+  tags:
+    - admin
+    - dotfiles
+
+- name: Add evomaintenance trap .profile skeleton with doas
+  lineinfile:
+    state: present
+    dest: /etc/skel/.profile
+    insertafter: EOF
+    line: 'trap "doas /usr/share/scripts/evomaintenance.sh" 0'
+    create: yes
+  tags:
+     - admin
+     - dotfiles
+
+- name: Add vim configuration to dotfiles for new users
+  copy:
+    src: vimrc
+    dest: /etc/skel/.vimrc
+    mode: "0644"
+  tags:
+    - admin
+    - dotfiles
+    - vim
+
+- name: Customize .kshrc environment file for new users
+  copy:
+    src: kshrc
+    dest: /etc/skel/.kshrc
+  tags:
+    - admin
+    - dotfiles

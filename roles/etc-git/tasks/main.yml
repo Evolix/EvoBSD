@@ -1,0 +1,118 @@
+---
+
+- name: Git is installed
+  openbsd_pkg:
+    name: git
+    state: present
+  tags:
+    - etc-git
+
+- name: /etc is versioned with git
+  command: "git init ."
+  args:
+    chdir: /etc
+    creates: /etc/.git/
+    warn: no
+  register: git_init
+  tags:
+    - etc-git
+
+- name: Git user.email is configured
+  git_config:
+    name: user.email
+    repo: /etc
+    scope: local
+    value: "root@{{ ansible_fqdn | default('localhost') }}"
+  tags:
+    - etc-git
+
+- name: /etc/.git is secure
+  file:
+    path: /etc/.git
+    owner: root
+    mode: "0700"
+    state: directory
+  tags:
+    - etc-git
+
+- name: /etc/.gitignore is present
+  copy:
+    src: gitignore
+    dest: /etc/.gitignore
+    owner: root
+    mode: "0600"
+  tags:
+    - etc-git
+
+- name: does /etc/ have any commit?
+  command: "git log"
+  args:
+    chdir: /etc
+    warn: no
+  changed_when: False
+  failed_when: False
+  register: git_log
+  check_mode: no
+  tags:
+    - etc-git
+
+- name: initial commit is present?
+  shell: "git add -A . && git commit -m \"Initial commit via Ansible\""
+  args:
+    chdir: /etc
+    warn: no
+  register: git_commit
+  when: git_log.rc != 0 or (git_init is defined and git_init.changed)
+  tags:
+    - etc-git
+
+- name: Optimize script is installed in monthly crontab
+  lineinfile:
+    path: /etc/monthly.local
+    line: '/usr/local/bin/git --git-dir /etc/.git gc --quiet'
+    owner: root
+    mode: "0700"
+    create: yes
+  tags:
+    - etc-git
+
+- name: cron job for /etc/.git status is installed
+  lineinfile:
+    path: /etc/daily.local
+    line: '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
+    owner: root
+    mode: "0700"
+    create: yes
+  when: etc_git_monitor_status
+  tags:
+    - etc-git
+
+- name: cron job for /etc/.git status is removed
+  lineinfile:
+    path: /etc/daily.local
+    line: '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
+    owner: root
+    mode: "0700"
+    state: absent
+  when: not etc_git_monitor_status
+  tags:
+    - etc-git
+
+- name: hourly cron job for /etc/.git status is installed
+  cron:
+    name: git status
+    minute: 42
+    job: "who > /dev/null || /usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short"
+  when: etc_git_monitor_status
+  tags:
+    - etc-git
+
+- name: hourly cron job for /etc/.git status is removed
+  cron:
+    name: git status
+    minute: 42
+    job: "who > /dev/null || /usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short"
+    state: absent
+  when: not etc_git_monitor_status
+  tags:
+    - etc-git

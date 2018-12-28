@@ -1,0 +1,33 @@
+# Playbook command
+# ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
+
+---
+- name: Evolixisation of an OpenBSD system
+  hosts: openbsd
+  become: true
+  become_user: root
+  become_method: sudo
+
+
+  vars_files:
+    - vars/main.yml
+#    - vars/secrets.yml
+
+  roles:
+    - etc-git
+    - base
+    - forwarding
+    - pf
+    - accounts
+    - nagios-nrpe
+    - post-install
+
+  post_tasks:
+    - include: "tasks/commit_etc_git.yml"
+      vars:
+        commit_message: "Ansible - Evolixisation"
+
+  environment:
+    PKG_PATH: "http://ftp.openbsd.org/pub/OpenBSD/{{ ansible_distribution_version }}/packages/{{ ansible_architecture }}/"
+
+# vim:ft=ansible

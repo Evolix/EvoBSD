@@ -1,0 +1,26 @@
+---
+- name: Create admins accounts
+  user:
+    state: present
+    name: '{{ item.value.name }}'
+    uid: '{{ item.value.uid }}'
+    password: '{{ item.value.password_hash_openbsd }}'
+    groups: wheel
+    shell: /bin/ksh
+    append: yes
+  with_dict:
+    "{{ evolix_users }}"
+  tags:
+    - admin
+
+- name: Add admins ssh keys
+  lineinfile:
+    state: present
+    dest: '/home/{{ item.value.name }}/.ssh/authorized_keys'
+    line: '{{ item.value.ssh_keys }}'
+    create: yes
+  with_dict:
+    "{{ evolix_users }}"
+  tags:
+    - admin
+

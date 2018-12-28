@@ -1,0 +1,22 @@
+#!/bin/sh
+
+# Script writen by Evolix
+
+_MAX_STATES_LIMIT=$(/sbin/pfctl -sm | /usr/bin/grep states | awk '{print $4}')
+_WARNING_STATES_LIMIT=$((_MAX_STATES_LIMIT*10/100))
+_CRTICAL_STATES_LIMIT=$((_MAX_STATES_LIMIT*15/100))
+
+. /usr/local/libexec/nagios/utils.sh
+
+_CHECK_STATES=$(/sbin/pfctl -si | /usr/bin/grep current | awk '{print $3}')
+
+if [ $_CHECK_STATES -lt $_WARNING_STATES_LIMIT ];then
+        echo "OK: States number ($_CHECK_STATES) is below threshold (warn : $_WARNING_STATES_LIMIT / crit : $_CRTICAL_STATES_LIMIT / max : $_MAX_STATES_LIMIT)"
+        exit "$STATE_OK"
+elif [ $_CHECK_STATES -ge $_WARNING_STATES_LIMIT ] && [ $_CHECK_STATES -lt $_CRTICAL_STATES_LIMIT ];then
+        echo "WARNING: States number is $_CHECK_STATES (threshold WARNING = $_WARNING_STATES_LIMIT, max = $_MAX_STATES_LIMIT)"
+        exit "$STATE_WARNING"
+else
+        echo "CRITICAL: States number is $_CHECK_STATES (threshold CRITICAL = $_CRTICAL_STATES_LIMIT, max = $_MAX_STATES_LIMIT)"
+        exit "$STATE_CRITICAL"
+fi

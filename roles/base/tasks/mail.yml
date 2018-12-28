@@ -1,0 +1,19 @@
+---
+- name: Configure rc.local
+  lineinfile:
+    path: /etc/rc.local
+    line: 'date | mail -s "boot/reboot of $(hostname -s)" {{ general_alert_email }}'
+    create: yes
+  tags:
+    - misc
+
+- name: Set root mail alias
+  replace:
+    dest: /etc/mail/aliases
+    regexp: "# root:"
+    replace: "root: {{ general_alert_email }}"
+    backup: no
+  notify:
+    - newaliases
+  tags:
+    - mail

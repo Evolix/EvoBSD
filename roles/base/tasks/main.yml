@@ -1,0 +1,9 @@
+---
+# tasks file for evobsd-base
+- include: packages.yml
+- include: doas.yml
+- include: dotfiles.yml
+- include: evomaintenance.yml
+- include: mail.yml
+- include: sudo.yml
+- include: evobackup.yml

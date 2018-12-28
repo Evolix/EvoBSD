@@ -1,0 +1,3 @@
+---
+- name: newaliases
+  shell: smtpctl update table aliases

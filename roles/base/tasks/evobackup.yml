@@ -1,0 +1,20 @@
+---
+- name: Copy zzz_evobackup script
+  copy:
+    src: zzz_evobackup
+    dest: /usr/share/scripts/zzz_evobackup
+    owner: root
+    group: wheel
+    mode: "0755"
+    force: no
+  tags:
+    - evobackup
+
+- name: Add evobackup cron (disabled)
+  lineinfile:
+    path: /etc/daily.local
+    line: '#sh /usr/share/scripts/zzz_evobackup'
+    owner: root
+    mode: "0700"
+  tags:
+    - evobackup

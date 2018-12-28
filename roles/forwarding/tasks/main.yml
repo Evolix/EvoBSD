@@ -1,0 +1,18 @@
+---
+- name: Enable IPv4 forwarding
+  sysctl:
+    name: net.inet.ip.forwarding
+    value: 1
+    state: present
+    reload: yes
+  tags:
+    - net
+
+- name: Enable IPv6 forwarding
+  sysctl:
+    name: net.inet6.ip6.forwarding
+    value: 1
+    state: present
+    reload: yes
+  tags:
+    - net

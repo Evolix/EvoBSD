@@ -1,0 +1,5 @@
+[openbsd]
+foo.example.com
+
+[openbsd:vars]
+ansible_python_interpreter=/usr/local/bin/python2.7

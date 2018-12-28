@@ -1,0 +1,74 @@
+# MANAGED BY ANSIBLE, MODIFICATIONS WILL BE LOST
+
+######################
+##### INTERFACES #####
+######################
+
+ext_if="{{ ansible_default_ipv4.device }}"
+#lan_if="em1"
+
+###########################
+##### TABLES & LISTES #####
+###########################
+
+# Evolix
+table <evolix> { 88.179.18.233, 31.170.9.129, 31.170.8.4 }
+
+# Port en entrée
+# 2222 = ssh secondaire
+# 5666 = nrpe
+#tcp_in  = "{ domain, ldap, ldaps, imap, imaps, pop3, pop3s, ssh, smtp, http, https, ftp, ftp-data, smtps, submission, 2222 }"
+tcp_in  = "{ http, https }"
+
+# 33433><33626 = traceroute
+#udp_in  = "{ domain, ntp, 33433><33626 }"
+udp_in  = "{ 33433><33626 }"
+
+
+###################
+##### OPTIONS #####
+###################
+
+set block-policy return
+set optimization normal
+#set optimization aggressive
+#set limit states 150000
+#set limit src-nodes 25000
+#set limit tables 10000
+#set limit table-entries 3000
+set skip on lo
+match in all scrub (no-df)
+
+####################
+##### FILTRAGE #####
+####################
+
+# politiques par defaut
+block log all
+
+# filter rules and anchor for ftp-proxy(8)
+#anchor "ftp-proxy/*"
+#pass in quick inet proto tcp to port ftp divert-to 127.0.0.1 port 8021
+
+#pass quick proto carp
+#pass quick on $pfsync_if proto pfsync
+
+pass out
+# 9999 = pfstat, 5666 = nrpe
+pass in on $ext_if proto tcp from <evolix> to (self) port { 9999, ssh, 5666 }
+
+# Block Attack
+# China 144.0.0.0/16 --> SSH
+block in on $ext_if proto tcp from 144.0.0.0/16 to any port ssh
+
+# Autorisation des protocoles
+pass in on $ext_if proto tcp to !(self) port $tcp_in
+pass in on $ext_if proto udp to !(self) port $udp_in
+
+# FTP actif
+# pass in on $ext_if proto tcp from any port 20 to any port 1024:65535
+
+
+# Acces public
+pass in proto { icmp, icmp6 }
+

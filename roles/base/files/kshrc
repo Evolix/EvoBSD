@@ -1,0 +1,17 @@
+alias vi='vim'
+sudo() { if [[ $# == "1" ]] && [[ $1 == "su" ]]; then command sudo -i; else command sudo "$@"; fi }
+
+##
+# Caracterisation du shell
+##
+
+bind -m '^L'='^U 'clear'^M^Y'
+bind '^[[4~'=end-of-line
+bind '^[[1~'=beginning-of-line
+bind '^[[3~'=delete-char-forward
+bind '^[[8~'=end-of-line
+bind '^[[7~'=beginning-of-line
+bind '^[Oc'=forward-word
+bind '^[Od'=backward-word
+bind '^[^[[C'=forward-word
+bind '^[^[[D'=backward-word

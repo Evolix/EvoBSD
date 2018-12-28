@@ -1,0 +1,16 @@
+# Playbook command
+# ansible-playbook prerequisite.yml -CDi hosts -l HOSTNAME
+
+---
+  - hosts: all
+    become: yes
+    become_method: su
+    user: root
+    gather_facts: no
+
+    tasks:
+
+    - name: Install ansible's prerequisite
+      raw: export PKG_PATH=http://ftp.eu.openbsd.org/pub/OpenBSD/$(uname -r)/packages/$(uname -p)/; pkg_add -z python-2
+
+# vim:ft=ansible

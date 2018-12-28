@@ -1,0 +1,11 @@
+syntax on
+set hlsearch
+set background=dark
+set expandtab
+set tabstop=4
+set softtabstop=0
+set shiftwidth=4
+set smarttab
+set backspace=indent,eol,start
+set showcmd
+set encoding=utf-8

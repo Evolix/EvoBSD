@@ -1,0 +1,12 @@
+#!/bin/sh
+
+. /usr/local/libexec/nagios/utils.sh
+
+# check if ospfd is running
+if [[ "$(ospfctl show 2>&1)" = *"/var/run/ospfd.sock:"* ]]; then
+        echo "CRITICAL - OSPFD not running"
+        exit "$STATE_CRITICAL"
+else
+        echo "OK - OSPFD is running"
+        exit "$STATE_OK"
+fi

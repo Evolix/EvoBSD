@@ -1,0 +1,29 @@
+---
+# dont't break the tab!
+- name: Allow wheel group to run command as root in sudo
+  lineinfile:
+    dest: /etc/sudoers
+    insertafter: '# and set environment variables.'
+    line: '%wheel	ALL=(ALL) SETENV: ALL'
+    validate: 'visudo -cf %s'
+    backup: no
+  tags:
+     - sudo
+
+- name: Configure sudoers for evomaintenance and monitoring
+  blockinfile:
+    state: present
+    dest: /etc/sudoers
+    insertafter: EOF
+    block: |
+      Cmnd_Alias MAINT = /usr/share/scripts/evomaintenance.sh
+      %wheel ALL=NOPASSWD: MAINT
+      _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/plugins/check_ipsecctl.sh
+      _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/check_mailq
+      _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/plugins/check_ospfd_simple
+    validate: 'visudo -cf %s'
+    backup: no
+  tags:
+     - sudo
+
+

@@ -1,0 +1,222 @@
+#!/bin/sh
+
+#
+# Script Evobackup plus ou moins forké
+# See https://forge.evolix.org/projects/evobackup
+# 
+
+PATH=/sbin:/usr/sbin:/bin:/usr/bin:/usr/local/sbin:/usr/local/bin
+
+## lang = C for english outputs
+LANGUAGE=C
+LANG=C
+
+## Force umask
+umask 077
+
+## Verify other evobackup process and kill if needed
+PIDFILE=/var/run/evobackup.pid
+if [ -e $PIDFILE ]; then
+    # Killing the childs of evobackup.
+    for pid in $(ps h --ppid $(cat $PIDFILE) -o pid | tr -s '\n' ' '); do
+        kill -9 $pid;
+    done
+    # Then kill the main PID.
+    kill -9 $(cat $PIDFILE)
+    echo "$0 tourne encore (PID `cat $PIDFILE`). Processus killé" >&2
+fi
+echo "$$" > $PIDFILE
+trap "rm -f $PIDFILE" EXIT
+
+# Variable to choose different backup server with date
+NODE=$(expr `date +%d` % 2 + 2)
+
+# port SSH
+SSH_PORT=2XXX
+
+# email adress for notifications
+MAIL={{ general_alert_email }}
+
+# backup server used
+SRV=node$NODE.backup2.evolix.net
+
+# choose "linux" or "bsd"
+SYSTEME=$(uname | tr '[:upper:]' '[:lower:]')
+
+## We use /home/backup : feel free to use your own dir
+mkdir -p -m 700 /home/backup
+
+## OpenLDAP : example with slapcat
+# slapcat -l /home/backup/ldap.bak
+
+### MySQL
+
+## example with global and compressed mysqldump
+# mysqldump --defaults-extra-file=/etc/mysql/debian.cnf -P 3306 \
+# --opt --all-databases --force --events --hex-blob | gzip --best > /home/backup/mysql.bak.gz
+
+## example with two dumps for each table (.sql/.txt) for all databases
+# for i in $(echo SHOW DATABASES | mysql --defaults-extra-file=/etc/mysql/debian.cnf -P 3306 \
+# | egrep -v "^(Database|information_schema|performance_schema)" ); \
+# do mkdir -p /home/mysqldump/$i ; chown -RL mysql /home/mysqldump ; \
+# mysqldump --defaults-extra-file=/etc/mysql/debian.cnf --force -P 3306 -Q --opt --events --hex-blob --skip-comments -T \
+# /home/mysqldump/$i $i; done
+
+## example with compressed SQL dump for each databases
+# mkdir -p /home/mysqldump/
+# for i in $(mysql --defaults-extra-file=/etc/mysql/debian.cnf -P 3306 -e 'show databases' -s --skip-column-names \
+# | egrep -v "^(Database|information_schema|performance_schema)"); do
+#     mysqldump --defaults-extra-file=/etc/mysql/debian.cnf --force -P 3306 --events --hex-blob $i | gzip --best > /home/mysqldump/${i}.sql.gz
+# done
+
+## example with *one* uncompressed SQL dump for *one* database (MYBASE)
+# mkdir -p -m 700 /home/mysqldump/MYBASE
+# chown -RL mysql /home/mysqldump/
+# mysqldump --defaults-extra-file=/etc/mysql/debian.cnf --force -Q \
+# --opt --events --hex-blob --skip-comments -T /home/mysqldump/MYBASE MYBASE
+
+## example with mysqlhotcopy
+# mkdir -p /home/mysqlhotcopy/
+# mysqlhotcopy BASE /home/mysqlhotcopy/
+
+## example for multiples MySQL instances
+# mysqladminpasswd=`cat /root/.my.cnf |grep -m1 'password = .*' |cut -d" " -f3`
+# grep -E "^port\s*=\s*\d*" /etc/mysql/my.cnf |while read instance; do
+#     instance=$(echo $instance |tr -d '\t')
+#     instance=${instance// /}
+#     instance=${instance//port=/}
+#     if [ "$instance" != "3306" ]
+#     then
+#         mysqldump -P $instance --opt --all-databases --hex-blob -u mysqladmin -p$mysqladminpasswd > /home/backup/mysql.$instance.bak
+#     fi
+# done
+
+### PostgreSQL
+
+## example with pg_dumpall (warning: you need space in ~postgres)
+# su - postgres -c "pg_dumpall > ~/pg.dump.bak"
+# mv ~postgres/pg.dump.bak /home/backup/
+
+## example with all tables from MYBASE excepts TABLE1 and TABLE2
+# pg_dump -p 5432 -h 127.0.0.1 -U USER --clean -F t --inserts -f /home/backup/pg-backup.tar -t 'TABLE1' -t 'TABLE2' MYBASE
+
+## example with only TABLE1 and TABLE2 from MYBASE
+# pg_dump -p 5432 -h 127.0.0.1 -U USER --clean -F t --inserts -f /home/backup/pg-backup.tar -T 'TABLE1' -T 'TABLE2' MYBASE
+
+## MongoDB : example with mongodump
+## don't forget to create use with read-only access
+## > use admin
+## > db.addUser("mongobackup", "PASS", true);
+# mongodump -u mongobackup -pPASS -o /home/backup/mongodump/ >/dev/null 2>&1 |grep -v "^connected to:"
+
+## Redis : example with copy .rdb file
+# cp /var/lib/redis/dump.rdb /home/backup/
+
+## ElasticSearch : example with rsync (warning: don't forget to use NFS if you have a cluster)
+## Disable ES translog flush
+# curl -s -XPUT 'localhost:9200/_settings' -d '{"index.translog.disable_flush": true}' >/dev/null
+## Flushes translog
+# curl -s 'localhost:9200/_flush' | grep -qe '"ok":true'
+## If it succeed, do an rsync of the datadir
+# if [ $? -eq 0 ]; then
+#     rsync -a /var/lib/elasticsearch /home/backup/
+# else
+#     echo "Error when flushing ES translog indexes."
+# fi
+## In any case re-enable translog flush
+# curl -s -XPUT 'localhost:9200/_settings' -d '{"index.translog.disable_flush": false}' > /dev/null
+
+## Dump MBR / table partitions with dd and sfdisk
+## Linux
+# dd if=/dev/sda of=/home/backup/MBR bs=512 count=1 2>&1 | egrep -v "(records in|records out|512 bytes)"
+# sfdisk -d /dev/sda > /home/backup/partitions 2>&1 | egrep -v "(Warning: extended partition does not start at a cylinder boundary|DOS and Linux will interpret the contents differently)"
+## OpenBSD
+# disklabel sd0 > /home/backup/partitions
+
+# backup MegaCli config
+#megacli -CfgSave -f /home/backup/megacli_conf.dump -a0 >/dev/null
+
+## Dump network routes with mtr and traceroute (warning: could be long with aggressive firewalls)
+for addr in 8.8.8.8 backup.evolix.net www.evolix.fr www.evolix.net; do
+    mtr -r $addr > /home/backup/mtr-${addr} 2>/dev/null
+    traceroute -n $addr > /home/backup/traceroute-${addr} 2>/dev/null
+done
+
+## Dump process with ps
+ps aux >/home/backup/ps.out
+
+if [ $SYSTEME = "linux" ]; then
+	## Dump network connections with netstat
+	netstat -taupen >/home/backup/netstat.out
+
+	## List Debian packages
+	dpkg -l >/home/backup/packages
+else
+	## Dump network connections with netstat
+	netstat -finet -atn >/home/backup/netstat.out
+
+	## List OpenBSD packages
+	pkg_info -m >/home/backup/packages
+fi
+
+HOSTNAME=$(hostname)
+
+DATE=$(/bin/date +"%d-%m-%Y")
+
+DEBUT=$(/bin/date +"%d-%m-%Y ; %H:%M")
+
+if [ $SYSTEME = "linux" ]; then
+    rep="/bin /boot /lib /opt /sbin /usr"
+else
+    rep="/bsd /bin /sbin /usr"
+fi
+
+/usr/local/bin/rsync -avzh --stats --delete --delete-excluded --force --ignore-errors --partial \
+    --exclude "lost+found"                             \
+    --exclude ".nfs.*"                                 \
+    --exclude "/var/log"                               \
+    --exclude "/var/log/evobackup*"                    \
+    --exclude "/var/lib/mysql"                         \
+    --exclude "/var/lib/postgres"                      \
+    --exclude "/var/lib/postgresql"                    \
+    --exclude "/var/lib/sympa"                         \
+    --exclude "/var/lib/metche"                        \
+    --exclude "/var/run"                               \
+    --exclude "/var/lock"                              \
+    --exclude "/var/state"                             \
+    --exclude "/var/apt"                               \
+    --exclude "/var/cache"                             \
+    --exclude "/usr/src"                               \
+    --exclude "/usr/doc"                               \
+    --exclude "/usr/share/doc"                         \
+    --exclude "/usr/obj"                               \
+    --exclude "dev"                                    \
+    --exclude "/var/spool/postfix"                     \
+    --exclude "/var/lib/amavis/amavisd.sock"           \
+    --exclude "/var/lib/munin/*tmp*"                   \
+    --exclude "/var/lib/php5"                          \
+    --exclude "/var/spool/squid"                       \
+    --exclude "/var/lib/elasticsearch"                 \
+    --exclude "/var/lib/amavis/tmp"                    \
+    --exclude "/var/lib/clamav/*.tmp"                  \
+    --exclude "/home/mysqltmp"                         \
+        $rep                                           \
+        /etc                                           \
+        /root                                          \
+        /var                                           \
+        /home                                          \
+    -e "ssh -p $SSH_PORT"                              \
+    root@${SRV}:/var/backup/     \
+    | tail -30 >> /var/log/evobackup.log
+
+FIN=$(/bin/date +"%d-%m-%Y ; %H:%M")
+
+echo "EvoBackup - $HOSTNAME - START $DEBUT"            \
+    >> /var/log/evobackup.log
+
+echo "EvoBackup - $HOSTNAME - STOP $FIN"               \
+    >> /var/log/evobackup.log
+
+tail -10 /var/log/evobackup.log |                      \
+    mail -s "[info] EvoBackup - Client $HOSTNAME"      \
+    $MAIL
