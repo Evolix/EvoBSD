@@ -26,7 +26,7 @@ ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
 Changes can be tested by using [Packer](https://www.packer.io/) and
 [vmm(4)](https://man.openbsd.org/vmm.4) :
 
-* This process depends on the [Go](https://golang.org/) programming language. *
+* This process depends on the [Go](https://golang.org/) programming language.
 
 ```
 # pkg_add go packer
@@ -38,7 +38,7 @@ Changes can be tested by using [Packer](https://www.packer.io/) and
 $ go get -u github.com/prep/packer-builder-vmm/cmd/packer-builder-vmm
 ```
 
-* Here is an example build file *
+* Here is an example build file
 
 ```
 $ vim openbsd.json
@@ -104,7 +104,7 @@ $ vim openbsd.json
 * You need your unprivileged user to be able to run vmctl(8) through doas(1)
 
 ```
-# echo "permit nopass myunprivilegeduser as root cmd /usr/sbin/vmctl
+# echo "permit nopass myunprivilegeduser as root cmd /usr/sbin/vmctl" >> /etc/doas.conf
 ```
 
 * Build the virtual machine
