@@ -5,7 +5,9 @@ used by Evolix.
 
 ## How to install an OpenBSD machine
 
-**Note :** The system must be installed with a root account only. Put your public key in the remote root's autorized_keys (/root/.ssh/authorized_keys)
+**Note :** The system must be installed with a root account only.
+Put your public key in the remote root's autorized_keys
+(/root/.ssh/authorized_keys)
 
 1 - Install ansible's prerequisites
 
@@ -13,36 +15,37 @@ used by Evolix.
 ansible-playbook prerequisite.yml -CDi hosts -l HOSTNAME
 ```
 
-2 - Run it!
+2 - Run it
 
 ```
 ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
 ```
 
-### Try it on a disposable system!
+### Testing
 
-The easiest way to try EvoBSD is by using packer and vmm :
+Changes can be tested by using [Packer](https://www.packer.io/) and
+[vmm(4)](https://man.openbsd.org/vmm.4) :
 
-* First of all let's install go and packer on your host system
+* This process depends on the [Go](https://golang.org/) programming language. *
 
 ```
 # pkg_add go packer
 ```
 
-* Then we gonna use [packer-builder-vmm](https://github.com/prep/packer-builder-vmm) project availbale on Github
+* We use the [packer-builder-vmm](https://github.com/prep/packer-builder-vmm) project to bridge Packer and vmm(4)
 
 ```
 $ go get -u github.com/prep/packer-builder-vmm/cmd/packer-builder-vmm
 ```
 
-* We have to create a definition file for packer
+* Here is an example build file *
 
 ```
 $ vim openbsd.json
 ```
 
     {
-      "description": "OpenBSD installation on VMM",
+      "description": "OpenBSD installation on vmm(4)",
 
       "variables": {
         "hostname":    "evobsd",
@@ -98,19 +101,19 @@ $ vim openbsd.json
     }
 
 
-* You need your unprivileged user to be able to run vmctl through doas
+* You need your unprivileged user to be able to run vmctl(8) through doas(1)
 
 ```
 # echo "permit nopass myunprivilegeduser as root cmd /usr/sbin/vmctl
 ```
 
-* Eventually you can build your virtual machine
+* Build the virtual machine
 
 ```
 $ packer build openbsd.json
 ```
 
-* Once the building is done, run your VM like this
+* Start it
 
 ```
 doas vmctl start evobsd -cL -d output-vmm/evobsd.qcow2
@@ -118,29 +121,12 @@ doas vmctl start evobsd -cL -d output-vmm/evobsd.qcow2
 
 ## Contributions
 
-Contributions to this project are most welcome! The best way is to create a
-pull request so that after review it's merged.
+Contributions to this project are most welcome! The best way is to
+create a pull request on https://gitea.evolix.org/evolix/EvoBSD so
+we can review and merge it.
+
+
 
 ## License
 
-MIT License
-
-Copyright (c) 2019 Evolix
-
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+[MIT License](LICENSE)
