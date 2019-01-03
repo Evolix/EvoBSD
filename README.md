@@ -127,12 +127,7 @@ pass out on em0 inet from tap0:network to any nat-to (em0)
 *assuming em0 is your egress interface*
 
 ## Contributions
-
-Contributions to this project are most welcome! The best way is to
-create a pull request on https://gitea.evolix.org/evolix/EvoBSD so
-we can review and merge it.
-
-
+See the [contribution guidelines](CONTRIBUTING.md)
 
 ## License
 
