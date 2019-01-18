@@ -1,0 +1,22 @@
+---
+- name: "User '{{ user.name }}' is present"
+  user:
+    state: present
+    name: '{{ user.name }}'
+    uid: '{{ user.uid }}'
+    password: '{{ user.password_hash_openbsd }}'
+    groups: wheel
+    shell: /bin/ksh
+    append: yes
+  tags:
+    - admin
+
+- name: "SSH public keys for '{{ user.name }}' are present"
+  authorized_key:
+    user: "{{ user.name }}"
+    key: "{{ ssk_key }}"
+    state: present
+  with_items: "{{ user.ssh_keys }}"
+  loop_control:
+    loop_var: ssk_key
+  when: user.ssh_keys is defined
