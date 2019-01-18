@@ -20,3 +20,5 @@
   loop_control:
     loop_var: ssk_key
   when: user.ssh_keys is defined
+  tags:
+    - admin
