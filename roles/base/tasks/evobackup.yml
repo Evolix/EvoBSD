@@ -15,6 +15,6 @@
     path: /etc/daily.local
     line: '#sh /usr/share/scripts/zzz_evobackup'
     owner: root
-    mode: "0700"
+    mode: "0644"
   tags:
     - evobackup
