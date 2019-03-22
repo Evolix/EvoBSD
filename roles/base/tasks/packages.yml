@@ -18,14 +18,9 @@
     - mtr--
     - iftop
     - postgresql-client
+    - sudo--
   tags:
     - pkg
 
-- name: Install sudo
-  openbsd_pkg:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - sudo--
   tags:
     - pkg
