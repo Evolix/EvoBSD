@@ -18,14 +18,14 @@
     - mtr--
     - iftop
     - postgresql-client
+    - sudo--
   tags:
     - pkg
 
-- name: Install sudo
-  openbsd_pkg:
-    name: "{{ item }}"
-    state: present
-  with_items:
-    - sudo--
+- name: Disable sndiod
+  service:
+    name: sndiod
+    enabled: no
+    state: stopped
   tags:
     - pkg
