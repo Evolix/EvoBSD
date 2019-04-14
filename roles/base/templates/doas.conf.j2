@@ -1,5 +1,5 @@
 # {{ ansible_managed }}
-permit setenv {ENV PS1 SSH_AUTH_SOCK SSH_TTY} :wheel
+permit setenv {SSH_AUTH_SOCK SSH_TTY PKG_PATH HOME=/root ENV=/root/.profile} :wheel
 permit nopass root
 permit setenv {ENV PS1 SSH_AUTH_SOCK SSH_TTY} nopass :wheel as root cmd /usr/share/scripts/evomaintenance.sh
 permit nopass _nrpe cmd /usr/local/libexec/nagios/check_ipsecctl.sh
