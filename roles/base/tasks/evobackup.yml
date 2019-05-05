@@ -16,5 +16,6 @@
     line: '#sh /usr/share/scripts/zzz_evobackup'
     owner: root
     mode: "0644"
+    create: yes
   tags:
     - evobackup
