@@ -17,7 +17,6 @@
     - rsync--
     - mtr--
     - iftop
-    - postgresql-client
     - sudo--
   tags:
     - pkg
