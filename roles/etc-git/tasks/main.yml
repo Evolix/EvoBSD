@@ -79,7 +79,7 @@
 - name: cron job for /etc/.git status is installed
   lineinfile:
     path: /etc/daily.local
-    line: {{ item }}
+    line: "{{ item }}"
     owner: root
     mode: "0644"
     create: yes
