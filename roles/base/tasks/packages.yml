@@ -18,7 +18,7 @@
     - mtr--
     - iftop
     - sudo--
-    - postresql-client
+    - postgresql-client
   tags:
     - pkg
 
