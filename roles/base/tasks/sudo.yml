@@ -21,7 +21,6 @@
       _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/plugins/check_ipsecctl.sh
       _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/check_mailq
       _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/plugins/check_ospfd_simple
-      _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/check_dhcp
     validate: 'visudo -cf %s'
     backup: no
   tags:
