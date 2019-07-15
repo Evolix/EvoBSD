@@ -18,14 +18,12 @@ command[check_swap]=/usr/local/libexec/nagios/check_swap --no-swap=ok -a -w 30% 
 command[check_ntp]=/usr/local/libexec/nagios/check_ntp -H ntp.evolix.net
 command[check_http]=/usr/local/libexec/nagios/check_http -H localhost -p 80
 command[check_onduleur]=/usr/local/libexec/nagios/check_ups -H localhost -u onduleur
-# Pour check_mailq, ajouter dans sudo :
-# _nrpe ALL=NOPASSWD: /usr/local/libexec/nagios/check_mailq
-command[check_mailq]=sudo /usr/local/libexec/nagios/check_mailq -w 10 -c 20
+command[check_mailq]=doas /usr/local/libexec/nagios/check_mailq -w 10 -c 20
 command[check_bind]=/usr/local/libexec/nagios/check_dig -l evolix.net -H localhost
 command[check_ssh]=/usr/local/libexec/nagios/check_ssh -p 22 localhost
 command[check_proxy]=/usr/local/libexec/nagios/check_tcp -p PORT
 #command[check_vpn]=/usr/local/libexec/nagios/check_ping -H IPDISTANTE -p 1 -w 5000,100% -c 5000,100%
-command[check_vpn]=sudo /usr/local/libexec/nagios/plugins/check_ipsecctl.sh IPDISTANTE IPLOCALE "VPN MARSEILLE-ROME"
+command[check_vpn]=doas /usr/local/libexec/nagios/plugins/check_ipsecctl.sh IPDISTANTE IPLOCALE "VPN MARSEILLE-ROME"
 command[check_openvpn]=/usr/local/libexec/nagios/plugins/check_openvpn
 command[check_pf_states]=doas /usr/local/libexec/nagios/plugins/check_pf_states
 command[check_carp1]=/usr/local/libexec/nagios/plugins/check_carp_if carp0 master
@@ -34,5 +32,5 @@ command[check_dhcpclient]=/usr/local/libexec/nagios/check_dhcp -i INTERFACE
 command[check_smb]=/usr/local/libexec/nagios/check_tcp -H IPLOCALE -p 445
 #command[check_ospfd]=doas /usr/local/libexec/nagios/plugins/check_ospfd
 #command[check_ospf6d]=doas /usr/local/libexec/nagios/plugins/check_ospf6d
-command[check_ospfd_simple]=sudo /usr/local/libexec/nagios/plugins/check_ospfd_simple
+command[check_ospfd_simple]=doas /usr/local/libexec/nagios/plugins/check_ospfd_simple
 command[check_mysql]=/usr/local/libexec/nagios/check_mysql -H 127.0.0.1 -f /etc/nrpe.d/.my.cnf

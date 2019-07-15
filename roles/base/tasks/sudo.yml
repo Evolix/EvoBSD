@@ -18,9 +18,6 @@
     block: |
       Cmnd_Alias MAINT = /usr/share/scripts/evomaintenance.sh
       %wheel ALL=NOPASSWD: MAINT
-      _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/plugins/check_ipsecctl.sh
-      _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/check_mailq
-      _nrpe  ALL=(root) NOPASSWD: /usr/local/libexec/nagios/plugins/check_ospfd_simple
     validate: 'visudo -cf %s'
     backup: no
   tags:
