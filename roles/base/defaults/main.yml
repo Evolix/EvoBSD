@@ -17,3 +17,14 @@ evomaintenance_from: "evomaintenance@{{ evomaintenance_from_domain }}"
 evomaintenance_full_from: "Evomaintenance <{{ evomaintenance_from }}>"
 evomaintenance_urgency_from: mama.doe@example.com
 evomaintenance_urgency_tel: "06.00.00.00.00"
+evomaintenance_install_vendor: False
+evomaintenance_force_config: True
+evomaintenance_api_endpoint: Null
+evomaintenance_api_key: Null
+evomaintenance_hook_api: True
+evomaintenance_hook_db: False
+evomaintenance_hook_commit: True
+evomaintenance_hook_mail: True
+evomaintenance_default_hosts: []
+evomaintenance_additional_hosts: []
+evomaintenance_hosts: "{{ evomaintenance_default_hosts | union(evomaintenance_additional_hosts) | unique }}"
