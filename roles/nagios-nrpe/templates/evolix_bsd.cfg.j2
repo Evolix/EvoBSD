@@ -38,6 +38,4 @@ command[check_smb]=/usr/local/libexec/nagios/check_tcp -H IPLOCALE -p 445
 #command[check_ospf6d]=doas /usr/local/libexec/nagios/plugins/check_ospf6d
 command[check_ospfd_simple]=sudo /usr/local/libexec/nagios/plugins/check_ospfd_simple
 command[check_mysql]=/usr/local/libexec/nagios/check_mysql -H 127.0.0.1 -f /etc/nrpe.d/.my.cnf
-
-# This is an Ansible managed file!
-# For local modifications use the /etc/nrpe.d/zzz-evolix.cfg file instead
+command[check_connections_state]=doas /usr/local/libexec/nagios/check_connections_state.sh
