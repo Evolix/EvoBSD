@@ -3,8 +3,8 @@
 # Script writen by Evolix
 
 _MAX_STATES_LIMIT=$(/sbin/pfctl -sm | /usr/bin/grep states | awk '{print $4}')
-_WARNING_STATES_LIMIT=$((_MAX_STATES_LIMIT*10/100))
-_CRTICAL_STATES_LIMIT=$((_MAX_STATES_LIMIT*15/100))
+_WARNING_STATES_LIMIT=$((_MAX_STATES_LIMIT*50/100))
+_CRTICAL_STATES_LIMIT=$((_MAX_STATES_LIMIT*65/100))
 
 . /usr/local/libexec/nagios/utils.sh
 

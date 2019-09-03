@@ -79,13 +79,16 @@
 - name: cron job for /etc/.git status is installed
   lineinfile:
     path: /etc/daily.local
-    line: '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
+    line: "{{ item }}"
     owner: root
     mode: "0644"
     create: yes
   when: etc_git_monitor_status
   tags:
     - etc-git
+  with_items:
+    - 'next_part "Checking /etc git status:"'
+    - '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
 
 - name: cron job for /etc/.git status is removed
   lineinfile:
