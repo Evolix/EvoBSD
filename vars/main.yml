@@ -2,12 +2,17 @@
 ########################################################
 ## Edit and uncomment to overwrite the default values ##
 ########################################################
-
+general_alert_email: "alert4@evolix.net"
+general_technical_realm: "evolix.ca"
+evomaintenance_realm: "evolix.fr"
 #ntpd_servers:
 #- "ntp.evolix.net"
 #
 #general_alert_email: "root@localhost"
 #general_technical_realm: "example.com"
+evolinux_ssh_group: "evolinux-ssh"
+evolinux_sudo_group: "evolinux-sudo"
+evolinux_root_disable_ssh: true
 #
 #evomaintenance_realm: "example.com"
 #evomaintenance_alert_email: "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
