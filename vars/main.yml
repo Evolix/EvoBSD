@@ -2,9 +2,7 @@
 ########################################################
 ## Edit and uncomment to overwrite the default values ##
 ########################################################
-general_alert_email: "alert4@evolix.net"
-general_technical_realm: "evolix.ca"
-evomaintenance_realm: "evolix.fr"
+
 #ntpd_servers:
 #- "ntp.evolix.net"
 #
