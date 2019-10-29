@@ -1,9 +1,3 @@
 ---
-- name: Fetch and install openup
-  get_url:
-    url: https://stable.mtier.org/openup
-    dest: /usr/local/bin/openup
-    mode: "0750"
-
-- name: Install updates (erratas) with openup
-  shell: /usr/local/bin/openup
+- name: Check and install updates (erratas) if available
+  shell: /usr/sbin/syspatch
