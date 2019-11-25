@@ -7,7 +7,7 @@
     password: '{{ user.password_hash_openbsd }}'
     groups: wheel
     shell: /bin/ksh
-    append: yes
+    append: true
   tags:
     - admin
 
@@ -20,5 +20,13 @@
   loop_control:
     loop_var: ssk_key
   when: user.ssh_keys is defined
+  tags:
+    - admin
+
+- name: "Add {{ user.name }} to {{ evolinux_sudo_group }} group"
+  user:
+    name: "{{ user.name }}"
+    groups: "{{ evolinux_sudo_group }}"
+    append: true
   tags:
     - admin
