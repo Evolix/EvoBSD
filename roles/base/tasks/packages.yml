@@ -9,9 +9,7 @@
 
 - name: Install packages (vim rsync mtr etc)
   openbsd_pkg:
-    name: "{{ item }}"
-    state: present
-  with_items:
+    name:
     - wget
     - vim--no_x11
     - rsync--
