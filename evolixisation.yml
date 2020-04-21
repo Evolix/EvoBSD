@@ -31,6 +31,7 @@
     # - openvpn
     # - ospf
     # - bgp
+    # - { role: collectd, collectd_server: "127.0.0.1" }
 
   post_tasks:
     - include: "tasks/commit_etc_git.yml"

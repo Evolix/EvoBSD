@@ -1,0 +1,122 @@
+Interval {{ collectd_interval }}
+Timeout 2
+
+LoadPlugin syslog
+<Plugin syslog>
+  LogLevel warning
+</Plugin>
+
+{% if collectd_plugin_exec is sameas true %}
+<LoadPlugin exec>
+  Interval {{ collectd_plugin_exec_interval }}
+</LoadPlugin>
+
+<Plugin exec>
+{% if collectd_plugin_exec_ifq_drops is sameas true %}
+  Exec "_collectd" "/usr/local/share/collectd/scripts/ifq_drops.sh"
+{% endif %}
+{% if collectd_plugin_exec_dns_stats is sameas true %}
+  Exec "_collectd" "/usr/local/share/collectd/scripts/dns_stats.sh"
+{% endif %}
+</Plugin>
+
+{% endif %}
+{% if collectd_plugin_load is sameas true %}
+LoadPlugin load
+{% endif %}
+{% if collectd_plugin_processes is sameas true %}
+LoadPlugin processes
+{% endif %}
+{% if collectd_plugin_uptime is sameas true %}
+LoadPlugin uptime
+{% endif %}
+{% if collectd_plugin_users is sameas true %}
+LoadPlugin users
+{% endif %}
+{% if collectd_plugin_pf is sameas true %}
+LoadPlugin pf
+{% endif %}
+
+{% if collectd_plugin_df is sameas true %}
+LoadPlugin df
+<Plugin df>
+  # expose host's mounts into container using -v /:/host:ro  (location inside container does not matter much)
+  # ignore rootfs; else, the root file-system would appear twice, causing
+  # one of the updates to fail and spam the log
+  ## Seems to be fixed with collectd 5.5+
+  ## FSType rootfs
+  # ignore the usual virtual / temporary file-systems
+  FSType sysfs
+  FSType proc
+  FSType devtmpfs
+  FSType devpts
+  FSType tmpfs
+  FSType fusectl
+  FSType cgroup
+  FSType overlay
+  FSType debugfs
+  FSType pstore
+  FSType securityfs
+  FSType hugetlbfs
+  FSType squashfs
+  FSType mqueue
+  IgnoreSelected true
+
+  ReportByDevice false
+  ReportInodes true # Default false
+  ValuesAbsolute true
+  ValuesPercentage true
+</Plugin>
+
+{% endif %}
+{% if collectd_plugin_disk is sameas true %}
+LoadPlugin disk
+<Plugin "disk">
+  #Disk "/^[hsv]d[a-z]/"
+  IgnoreSelected false
+</Plugin>
+
+{% endif %}
+{% if collectd_plugin_cpu is sameas true %}
+LoadPlugin cpu
+<Plugin cpu>
+  ValuesPercentage true
+</Plugin>
+
+{% endif %}
+{% if collectd_plugin_memory is sameas true %}
+LoadPlugin memory
+<Plugin memory>
+  ValuesPercentage true
+</Plugin>
+
+{% endif %}
+{% if collectd_plugin_swap is sameas true %}
+LoadPlugin swap
+<Plugin swap>
+  ValuesPercentage true
+</Plugin>
+
+{% endif %}
+{% if collectd_plugin_interface is sameas true %}
+LoadPlugin interface
+<Plugin interface>
+  Interface "/^lo[0-9]*/"
+  Interface "/^veth.*/"
+  Interface "/^docker.*/"
+  IgnoreSelected true
+  ReportInactive false
+</Plugin>
+
+{% endif %}
+{% if collectd_plugin_tcpconns is sameas true %}
+LoadPlugin tcpconns
+<Plugin "tcpconns">
+  AllPortsSummary true
+</Plugin>
+
+{% endif %}
+LoadPlugin network
+<Plugin "network">
+  Server "{{ collectd_server }}" "25826"
+</Plugin>
