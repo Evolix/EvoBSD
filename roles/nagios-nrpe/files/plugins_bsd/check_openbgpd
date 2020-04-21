@@ -1,0 +1,387 @@
+#!/usr/bin/perl -T
+# $AFresh1: check_openbgpd,v 1.10 2015/03/26 03:44:15 andrew Exp $
+########################################################################
+# check_openbgpd *** A nagios check for OpenBSD bgpd
+#
+# 2009.11.12 #*#*# andrew fresh <andrew@afresh1.com>
+########################################################################
+use strict;
+use warnings;
+
+use 5.010;
+use if $] >= 5.016, experimental => 'switch';
+
+local %ENV = ();
+
+my $NAGIOS_OUTPUT = 1;
+
+my $LICENSE = <<'EOL';
+Copyright (c) 2009-2015 Andrew Fresh <andrew@afresh1.com>
+Permission to use, copy, modify, and distribute this software for any
+purpose with or without fee is hereby granted, provided that the above
+copyright notice and this permission notice appear in all copies.
+
+THE SOFTWARE IS PROVIDED "AS IS" AND THE AUTHOR DISCLAIMS ALL WARRANTIES
+WITH REGARD TO THIS SOFTWARE INCLUDING ALL IMPLIED WARRANTIES OF
+MERCHANTABILITY AND FITNESS. IN NO EVENT SHALL THE AUTHOR BE LIABLE FOR
+ANY SPECIAL, DIRECT, INDIRECT, OR CONSEQUENTIAL DAMAGES OR ANY DAMAGES
+WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS, WHETHER IN AN
+ACTION OF CONTRACT, NEGLIGENCE OR OTHER TORTIOUS ACTION, ARISING OUT OF
+OR IN CONNECTION WITH THE USE OR PERFORMANCE OF THIS SOFTWARE.
+EOL
+
+my $PROGNAME = 'check_openbgpd';
+my $BGPCTL   = '/usr/sbin/bgpctl';
+
+use POSIX;
+use Config;
+my $PREFIX;
+
+BEGIN {
+    ## no critic 'warnings'
+    no warnings 'uninitialized';
+    $PREFIX = "/usr/local" || '/usr/local';    # Magic for OpenBSD ports tree
+}
+use lib $PREFIX . '/libexec/nagios';
+use utils qw($TIMEOUT %ERRORS &support);
+
+$SIG{'ALRM'} = sub {
+    print("ERROR: $PROGNAME timeout\n");
+    exit $ERRORS{'UNKNOWN'};
+};
+alarm($TIMEOUT);
+
+my %CHECKS = getopt(@ARGV);
+if ( !%CHECKS ) {
+    print_help();
+    exit $ERRORS{'OK'};
+}
+
+my @STATUS = read_status( $CHECKS{_SOCKET} );
+my %STATES = check_status( \@STATUS, \%CHECKS );
+
+my $have_results = 0;
+my $state        = 'OK';
+foreach
+    my $error ( reverse sort { $ERRORS{$a} <=> $ERRORS{$b} } keys %ERRORS )
+{
+    if ( exists $STATES{$error} ) {
+        $have_results++;
+        $state = $error if $ERRORS{$state} < $ERRORS{$error};
+
+        if ($NAGIOS_OUTPUT) {
+            print $error . ' (' . scalar( @{ $STATES{$error} } ) . ')';
+            if ( $error ne 'OK' ) {
+                print '<br>';
+                print map {" - $_<br>"} @{ $STATES{$error} };
+            }
+        }
+        else {
+            print $error . ' (' . scalar( @{ $STATES{$error} } ) . "):\n";
+            foreach ( @{ $STATES{$error} } ) {
+                print "   $_\n";
+            }
+        }
+    }
+}
+if ( $have_results == 0 ) {
+    print "No results found\n";
+}
+exit $ERRORS{$state};
+
+sub read_status {
+    my ($socket) = @_;
+    my @S;
+
+    my @cmd = ($BGPCTL);
+    if ($socket) {
+        push @cmd, '-s', $socket;
+    }
+    push @cmd, 'show', 'summary';
+
+    #open my $fh, '<', 'output'    # XXX
+    open my $fh, '-|', @cmd or die "Couldn't open bgpctl: $!\n";
+    while (<$fh>) {
+        chomp;
+        push @S, parse_line($_);
+    }
+    ## no critic 'die'
+    close $fh
+        or die $!
+        ? "Error closing sysctl pipe: $!\n"
+        : "Exit status $? from sysctl\n";
+
+    return grep { exists $_->{neighbor} && $_->{as} ne 'AS' } @S;
+}
+
+sub parse_line {
+    my ($c) = @_;
+    my ( $neighbor, $as, $rcvd, $sent, $outq, $updown, $state, )
+        = $c
+        =~ /^(.*?)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*$/xms;
+    return {
+        neighbor => $neighbor,
+        as       => $as,
+        rcvd     => $rcvd,
+        sent     => $sent,
+        outq     => $outq,
+        updown   => $updown,
+        state    => $state,
+        line     => $c,
+    };
+}
+
+sub parse_check {
+    my $check = shift;
+
+    return { match => [] } unless $check;
+    my @values = split /,\s*/xms, $check;
+
+    my %c = ( match => [] );
+    foreach my $v (@values) {
+        if ( $v =~ /:/xms ) {
+            ( $c{low}, $c{high} ) = split /:/xms, $v;
+        }
+        else {
+            push @{ $c{match} }, $v;
+        }
+    }
+
+    foreach my $d ( 'low', 'high' ) {
+        if ( defined $c{$d} ) {
+            $c{$d} =~ s/[^-\d\.\%]//gxms;
+            if ( !length $c{$d} ) {
+                delete $c{$d};
+            }
+        }
+    }
+
+    return \%c;
+}
+
+sub check_status {
+    my ( $S, $C ) = @_;
+
+    my %states;
+    my %neighbors = map { $_ => $C->{$_} } qw( _SOCKET _UNKNOWN );
+STATE: foreach my $s ( @{$S} ) {
+        my $n = $s->{neighbor};
+        $neighbors{$n} = $s;
+
+        my $result;
+
+        if ( my $c = $C->{$n} || $C->{_UNKNOWN} ) {
+        CODE: foreach my $code ( 'CRITICAL', 'WARNING' ) {
+                next CODE if ( ref $c->{$code} ne 'HASH' );
+                my $data = $s->{state};
+
+                my $result = check_item( $data, $c->{$code} );
+
+                if ($result) {
+                    push @{ $states{$code} }, "[$n] $result";
+                    next STATE;
+                }
+            }
+        }
+        else {
+            push @{ $states{CRITICAL} }, '[' . $n . '] Unknown Neighbor';
+            next STATE;
+        }
+
+        push @{ $states{OK} }, $n;
+    }
+
+    foreach my $n ( keys %{$C} ) {
+        if ( !exists $neighbors{$n} ) {
+            push @{ $states{CRITICAL} }, '[' . $n . '] Missing Neighbor';
+        }
+    }
+
+    return %states;
+}
+
+sub check_item {
+    my ( $d, $c ) = @_;
+
+    my $result;
+
+    if ( $c->{match} && @{ $c->{match} } ) {
+        foreach my $m ( @{ $c->{match} } ) {
+            return if $m eq $d;
+        }
+        $result = 'State (' . $d . ') is outside of acceptable values';
+    }
+
+    if ( $c->{low} || $c->{high} ) {
+        $result = undef;
+        my ( $num, $max ) = split m{/}xms, $d;
+        $num =~ s/[^-\d\.]//gxms;
+
+        if ( !length $num ) {
+            return 'State (' . $d . ') is not numeric';
+        }
+
+    DIRECTION: foreach my $dir (qw( low high )) {
+            if ( !$c->{$dir} ) { next DIRECTION; }
+
+            my $check = $c->{$dir};
+            my $cnum  = $num;
+
+            if ( $check =~ s/\%$//xms ) {
+                if ( !defined $max ) {
+                    return 'max-prefix not specified and % check requested';
+                }
+
+                # convert to percent
+                $cnum = 100 * $cnum / $max;
+            }
+
+            my @nums       = ( $cnum, $check );
+            my $abovebelow = 'below';
+            my $symbol     = '<';
+            if ( $dir eq 'high' ) {
+                @nums       = ( $check, $cnum );
+                $abovebelow = 'above';
+                $symbol     = '>';
+            }
+
+            if ( $nums[0] < $nums[1] ) {
+                return join q{ }, 'is', $abovebelow,
+                    'threshold (' . $d,
+                    $symbol, $c->{$dir} . ')';
+            }
+        }
+    }
+
+    return $result;
+}
+
+sub getopt {
+    my (@argv) = @_;
+
+    my %checks;
+    while (@argv) {
+        state( $w, $c );
+
+        my $opt = shift @argv;
+        for ($opt) {
+            when ( '-V' || '--version' ) {
+                print_revision( $PROGNAME, '$Revision: 1.10 $ ' );
+                exit $ERRORS{'OK'}
+            }
+            when (/^-?-h(?:elp)?/xms) { print_help(); exit $ERRORS{'OK'} }
+            when (/^-?-s(?:ocket)?/xms) { $checks{_SOCKET} = shift @argv }
+            when (/^-?-w(?:arning)?/xms)  { $w = parse_check( shift @argv ) }
+            when (/^-?-c(?:ritical)?/xms) { $c = parse_check( shift @argv ) }
+            when (/^-?-u(?:nknown)?/xms) {
+                $checks{_UNKNOWN} = {
+                    WARNING  => $w,
+                    CRITICAL => $c,
+                };
+            }
+            when (/^-?-n(?:eighbor)?/xms) {
+                while ( @argv && $argv[0] !~ /^-/xms ) {
+                    $checks{ shift @argv } = {
+                        WARNING  => $w,
+                        CRITICAL => $c,
+                    };
+                }
+            }
+            default { print_help(); exit $ERRORS{'UNKNOWN'} }
+        }
+    }
+    return %checks;
+}
+
+sub print_help {
+    print <<"EOL";
+$PROGNAME - checks status of OpenBGPd peers
+    $PROGNAME [ -s SOCKET ][ -w ENTRY ][ -c ENTRY ]( -u | -n NEIGHBOR )
+
+Usage:
+    -s, --socket SOCKET
+        Path to bgpd socket to use. See -r in bgpd(8).
+    -w, --warning RANGE or single ENTRY
+        Exit with WARNING status if outside of RANGE or if != ENTRY
+        May be entered multiple times.
+    -c, --critical RANGE or single ENTRY
+        Exit with CRITICAL status if outside of RANGE or if != ENTRY
+        May be entered multiple times.
+    -n, --neighbor NEIGHBOR
+        The name of the Neighbor, can be a space separated list of neighbors.
+        May be entered multiple times.
+    -u, --unknown
+        As if you specified -n for all unknown neighbors
+
+ENTRY is a comma separated list of items to match against.  Each item can be
+a RANGE or it will just be matched against the status.
+
+RANGE is specified as two optional numbers separated with a colon (:).  The
+check is that the value is between the two numbers.  If either number is left
+off, that check is ignored.
+
+If either number in a RANGE is specified as a percent, check is that
+max-prefix is specified and that the number is within the specified percent.
+
+NEIGHBOR is the name that shows when running "bgpctl show summary"
+
+Examples:
+(where many of the numbers would probably have to be multiplied by 1000)
+
+Any time a NEIGHBOR is specified on the command line but does NOT show up in
+the output causes a CRITICAL result.
+
+Any time a NEIGHBOR that is NOT specified on the command line shows up in the
+output causes a CRITICAL result.  If -u is specified, it treats NEIGHBOR as if
+it were specified at that position.
+
+
+$PROGNAME -c Idle -n P1 -c 1:1 -n P2 -w 200:300 -c Active,10: -n P3
+
+CRITICAL
+    If P1 is any value but Idle.
+    If P2 is any value but 1.
+    If P3 is below 10 or any non-numeric value other than "Active".
+
+WARNING
+    If P3 is above 10 and below 200 or above 300.
+
+
+$PROGNAME -u -w 50%:70% -c 10%:90% -n P2 P3
+
+No checks of unknown neighbors.
+
+CRITICAL
+    If P2 or P3 do not have max-prefix set or if they do but learned prefixes
+    are below 10% or above 90% of max-prefix or any non-numeric value.
+
+WARNING
+    If P2 or P3 have learned prefixes below 50% or above 70% of max-prefix.
+
+
+$PROGNAME -w 50%:70% -c 10%:90% -u
+
+CRITICAL
+    If any neighbor does not have max-prefix set or if they do but learned
+    prefixes are below 10% or above 90% of max-prefix or any non-numeric value.
+
+WARNING
+    If any neighbor have learned prefixes below 50% or above 70% of max-prefix.
+
+EOL
+
+    print_revision( $PROGNAME, '$Revision: 1.10 $' );
+
+    print $LICENSE;
+
+    return;
+}
+
+sub print_revision {
+    my ( $prog, $rev ) = @_;
+    $rev =~ s/^\D+([\d\.]+)\D+$/v$1/xms;
+
+    say $prog, q{ }, $rev;
+
+    return;
+}
