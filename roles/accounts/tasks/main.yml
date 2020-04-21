@@ -4,6 +4,11 @@
     name: "{{ evolinux_sudo_group }}"
     system: true
 
+- name: "Create {{ evolinux_ssh_group }}"
+  group:
+    name: "{{ evolinux_ssh_group }}"
+    system: true
+
 - name: Create user accounts
   include: user.yml
   vars:

@@ -30,3 +30,11 @@
     append: true
   tags:
     - admin
+
+- name: "Add {{ user.name }} to {{ evolinux_ssh_group }} group"
+  user:
+    name: "{{ user.name }}"
+    groups: "{{ evolinux_ssh_group }}"
+    append: true
+  tags:
+    - admin
