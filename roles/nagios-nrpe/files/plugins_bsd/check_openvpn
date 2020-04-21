@@ -1,9 +1,12 @@
 #!/bin/sh
+#
+# Wrapper of check_openvpn.pl, to use when the serveur is CARP backup and OpenVPN should not run
 
-if netstat -an|grep '.1194' >/dev/null; then
-        echo "VPN OK"
-        return 0
+carp=$(/sbin/ifconfig carp0 | /usr/bin/grep 'status' |cut -d' ' -f2)
+
+if [ $carp = 'backup' ]; then
+    echo "No check, I'm a backup"
+    return 0
 else
-        echo "PROCESS NOT LISTENING"
-        return 2
+    /usr/local/libexec/nagios/plugins/check_openvpn.pl -H 127.0.0.1 -p 1195 -P PASSWORD
 fi
