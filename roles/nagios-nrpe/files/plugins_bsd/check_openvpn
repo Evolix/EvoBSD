@@ -1,6 +1,6 @@
 #!/bin/sh
 #
-# Wrapper of check_openvpn.pl, to use when the serveur is CARP backup and OpenVPN should not run
+# Wrapper of check_openvpn.pl, to use when the server is CARP backup and OpenVPN should not run
 
 carp=$(/sbin/ifconfig carp0 | /usr/bin/grep 'status' |cut -d' ' -f2)
 
