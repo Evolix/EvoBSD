@@ -1,0 +1,3 @@
+---
+bgp_mailto: "foobar@example.com"
+bgp_exclude_grep_command: ""

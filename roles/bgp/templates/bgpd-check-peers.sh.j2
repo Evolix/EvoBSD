@@ -1,0 +1,117 @@
+#!/bin/ksh
+
+# Script writen by Daniel Jakots
+
+# First we go through the list of neighbor and we write all the peer and
+# their status in "${_TMPDIR}"/bgp-status.
+
+# Then we monitor if this file has changed between now and the previous run.
+
+# If it did, we send a mail with the states of the different sessions.
+
+set -u
+
+PATH=$HOME/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:.
+
+_MAILTO="{{ bgp_mailto }}"
+_TMPDIR=/tmp/check-bgp
+_PIDFILE="${_TMPDIR}"/bgpd-check-peers.pid
+
+
+if [ -e /etc/realname ]; then
+    _REALNAME=$(cat /etc/realname)
+    _HOSTNAME=$(hostname -s)
+else
+    _HOSTNAME=$(hostname)
+fi
+
+mkdir -p "${_TMPDIR}"
+
+# Don't try to run if it's already running
+if [ -e "${_PIDFILE}" ]; then
+    echo "$(date)" >> "${_TMPDIR}"/log
+    exit 1
+else
+    echo $$ >> "${_PIDFILE}"
+fi
+
+# Create an history
+if [[ -f "${_TMPDIR}"/bgp-status ]] ; then
+    mv "${_TMPDIR}"/bgp-status "${_TMPDIR}"/bgp-status.old
+else
+    touch "${_TMPDIR}"/bgp-status
+    touch "${_TMPDIR}"/bgp-status.old
+fi
+
+# List peers and loops on them to list them and their BGP state
+bgpctl show neighbor | grep Description {{ bgp_exclude_grep_command }} | sed s,\ Description:\ ,,g > "${_TMPDIR}"/peers-list
+
+while read _PEER
+do
+    _STATUS=$(/usr/sbin/bgpctl show neighbor "${_PEER}" | grep state | awk '{print $4}' |tr -d ',')
+    echo -n "${_PEER}" >> "${_TMPDIR}"/bgp-status
+    echo -n " " >> "${_TMPDIR}"/bgp-status
+    # we note only if it's established or not
+    if ! [[ "${_STATUS}" = "Established" ]] ; then
+       _STATUS="NotEstablished"
+    fi
+    echo "${_STATUS}" >> "${_TMPDIR}"/bgp-status
+
+done <"${_TMPDIR}"/peers-list
+
+# Check for difference with previous run
+different=$(diff -q "${_TMPDIR}"/bgp-status.old "${_TMPDIR}"/bgp-status)
+
+if ! [[ -n "${different}" ]] ; then
+    rm -f "${_PIDFILE}"
+    exit 0
+fi
+
+# It changed so we're going to send a mail
+
+_TMPMAILDIR="${_TMPDIR}"/mail
+mkdir -p "${_TMPMAILDIR}"
+
+# go through sessions and list them depending on their BGP state
+echo "*** Session(s) OK ***\n" >> "${_TMPMAILDIR}"/bodyok
+while read _LINE
+do
+    # _LINE is session + status
+    _STATUS=$(echo "${_LINE##* }")
+    _SESSION=$(echo "${_LINE}" | awk '{$NF=""}1')
+    if [[ "${_STATUS}" = "Established" ]] ; then
+	bgpctl show | grep "${_SESSION}" >> "${_TMPMAILDIR}"/bodyok
+    else
+	bgpctl show | grep "${_SESSION}" >> "${_TMPMAILDIR}"/bodynok
+    fi
+done <"${_TMPDIR}"/bgp-status
+
+# create the mail body
+
+echo "Dear NOC,\n\nThe state of one or more BGP session(s) has changed:\n" > "${_TMPMAILDIR}"/header
+cat "${_TMPMAILDIR}"/header "${_TMPMAILDIR}"/bodyok > "${_TMPMAILDIR}"/body
+
+_STATE="OK"
+if [[ -f "${_TMPMAILDIR}"/bodynok ]] ; then
+    _STATE="NOT OK"
+    echo "\n*** Session(s) on error ***\n" >> "${_TMPMAILDIR}"/body
+    cat "${_TMPMAILDIR}"/bodynok >> "${_TMPMAILDIR}"/body
+fi
+
+# show a diff
+echo "" >> "${_TMPMAILDIR}"/body
+echo "Diff is " >> "${_TMPMAILDIR}"/body
+diff -U0 "${_TMPDIR}"/bgp-status.old "${_TMPDIR}"/bgp-status >> "${_TMPMAILDIR}"/body
+
+# Send the mail whether we have a realname or not
+if [ -n "${_REALNAME}" ]; then
+    cat "${_TMPMAILDIR}"/body | mail -s "[BGP] ${_REALNAME} (${_HOSTNAME}) - State change - ${_STATE}" "${_MAILTO}"
+else
+    cat "${_TMPMAILDIR}"/body | mail -s "[BGP] ${_HOSTNAME} - State change" "${_MAILTO}"
+fi
+
+# cleaning
+if [[ -d  "${_TMPMAILDIR}" ]] ; then
+    rm -rf  "${_TMPMAILDIR}"
+fi
+rm -f "${_PIDFILE}"

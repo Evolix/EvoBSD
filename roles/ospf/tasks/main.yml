@@ -1,0 +1,22 @@
+---
+- name: Deploy ospf check scripts
+  template:
+    src: "{{ item }}.j2"
+    dest: /usr/share/scripts/{{ item }}
+  with_items:
+    - "ospfd-check-peers.sh"
+    - "ospf6d-check-peers.sh"
+  when: group_names | select('search','ospf') | list | count > 0
+  tags:
+  - ospf
+
+- name: Cron job for ospf check scripts is installed
+  cron:
+    name: "{{ item }} check"
+    job: "/bin/sh /usr/share/scripts/{{ item }}-check-peers.sh"
+  with_items:
+    - ospfd
+    - ospf6d
+  when: group_names | select('search','ospf') | list | count > 0
+  tags:
+    - ospf

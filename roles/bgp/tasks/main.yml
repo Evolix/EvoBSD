@@ -1,0 +1,35 @@
+---
+- name: Deploy bgp check script
+  template:
+    src: bgpd-check-peers.sh.j2
+    dest: /usr/share/scripts/bgpd-check-peers.sh
+  when: group_names | select('search','bgp') | list | count > 0
+  tags:
+  - bgp
+
+- name: Cron job for bgp check script is installed
+  cron:
+    name: bgp check
+    job: "/bin/sh /usr/share/scripts/bgpd-check-peers.sh"
+  when: group_names | select('search','bgp') | list | count > 0
+  tags:
+    - bgp
+
+- name: Create bgp log directory 
+  file:
+    path: /var/log/bgp
+    state: directory
+  when: group_names | select('search','bgp') | list | count > 0
+  tags:
+  - bgp
+
+- name: weekly best routes cron job is installed
+  cron:
+    name: bgp best routes
+    minute: 0
+    hour: 4
+    weekday: 0
+    job: "/usr/sbin/bgpctl show rib selected > /var/log/bgp/rib-selected-$(date +%F)"
+  when: group_names | select('search','bgp') | list | count > 0
+  tags:
+    - bgp
