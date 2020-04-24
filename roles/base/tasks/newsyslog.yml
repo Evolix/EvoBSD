@@ -1,0 +1,7 @@
+---
+- name: Customize newsyslog
+  copy:
+    src: newsyslog.conf
+    dest: /etc/newsyslog.conf
+  tags:
+    - newsyslog
