@@ -3,10 +3,16 @@
 . /usr/local/libexec/nagios/utils.sh
 
 # check if ospfd is running
-if [[ "$(ospfctl show 2>&1)" = *"/var/run/ospfd.sock:"* ]]; then
-        echo "CRITICAL - OSPFD not running"
+if ! ls /var/run/ospfd* > /dev/null 2>&1; then
+        echo "CRITICAL - OSPFD not running, no socket found"
         exit "$STATE_CRITICAL"
 else
-        echo "OK - OSPFD is running"
-        exit "$STATE_OK"
+        if ospfctl show 2>&1 | grep -q "Uptime"; then
+                uptime=$(ospfctl show | grep Uptime | awk '{print $2}')
+                echo "OK - OSPFD has been running for $uptime"
+                exit "$STATE_OK"
+        else
+                echo "CRITICAL - OSPFD not running"
+                exit "$STATE_CRITICAL"
+        fi
 fi
