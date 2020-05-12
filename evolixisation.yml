@@ -35,6 +35,9 @@
     - include: "tasks/commit_etc_git.yml"
       vars:
         commit_message: "Ansible - Evolixisation"
+    - include_role:
+        name: evocheck
+        tasks_from: exec.yml
 
 #  environment:
 #    PKG_PATH: "http://ftp.openbsd.org/pub/OpenBSD/{{ ansible_distribution_version }}/packages/{{ ansible_architecture }}/"
