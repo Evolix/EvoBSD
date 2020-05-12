@@ -25,6 +25,7 @@
     - pf
     - accounts
     - nagios-nrpe
+    - evocheck
     - post-install
     #- openvpn
     #- ospf
