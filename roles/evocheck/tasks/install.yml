@@ -4,7 +4,7 @@
     path: "{{ evocheck_bin_dir }}"
     state: directory
     owner: root
-    group: root
+    group: wheel
     mode: "0700"
   tags:
     - evocheck
