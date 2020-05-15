@@ -29,7 +29,7 @@
     minute: 0
     hour: 4
     weekday: 0
-    job: "/usr/sbin/bgpctl show rib selected > /var/log/bgp/rib-selected-$(date +%F)"
+    job: "/usr/sbin/bgpctl show rib selected > /var/log/bgp/rib-selected-$(date +\\%F)"
   when: group_names | select('search','bgp') | list | count > 0
   tags:
     - bgp
