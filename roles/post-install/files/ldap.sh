@@ -5,8 +5,8 @@ dnsPTRrecord=$(hostname)
 HardwareMark=$(sysctl hw.vendor| sed 's#hw.vendor=##')
 HardwareModel=$(sysctl hw.product| sed 's#hw.product=##')
 computerIP=$(ifconfig egress | grep inet | awk -v OFS="\n" '{ print $2, $NF }'| head -1)
-computerOS=OpenBSD
 computerKernel=$(sysctl kern.osrelease | sed 's#kern.osrelease=##')
+computerOS=OpenBSD $computerKernel
 HardwareSerial=$(sysctl hw.serialno| sed 's#hw.serialno=##')
 clientNumber="XXX"
 cpuMark=$(sysctl hw.model| sed 's#hw.model=##')
