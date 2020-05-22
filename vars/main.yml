@@ -3,29 +3,29 @@
 ## Edit and uncomment to overwrite the default values ##
 ########################################################
 
-#ntpd_servers:
-#- "ntp.evolix.net"
+# ntpd_servers:
+# - "ntp.evolix.net"
 #
-#general_alert_email: "root@localhost"
-#general_technical_realm: "example.com"
+# general_alert_email: "root@localhost"
+# general_technical_realm: "example.com"
 evolinux_ssh_group: "evolinux-ssh"
 evolinux_sudo_group: "evolinux-sudo"
 evolinux_root_disable_ssh: true
 #
-#evomaintenance_realm: "example.com"
-#evomaintenance_alert_email: "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
-#evomaintenance_hostname: "{{ inventory_hostname }}.{{ general_technical_realm }}"
-#evomaintenance_pg_host: Null
-#evomaintenance_pg_passwd: Null
-#evomaintenance_pg_db: Null
-#evomaintenance_pg_table: Null
-#evomaintenance_from_domain: "{{ evomaintenance_realm }}"
-#evomaintenance_from: "evomaintenance@{{ evomaintenance_from_domain }}"
-#evomaintenance_full_from: "Evomaintenance <{{ evomaintenance_from }}>"
-#evomaintenance_urgency_from: mama.doe@example.com
-#evomaintenance_urgency_tel: "06.00.00.00.00"
+# evomaintenance_realm: "example.com"
+# evomaintenance_alert_email: "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
+# evomaintenance_hostname: "{{ inventory_hostname }}.{{ general_technical_realm }}"
+# evomaintenance_pg_host: Null
+# evomaintenance_pg_passwd: Null
+# evomaintenance_pg_db: Null
+# evomaintenance_pg_table: Null
+# evomaintenance_from_domain: "{{ evomaintenance_realm }}"
+# evomaintenance_from: "evomaintenance@{{ evomaintenance_from_domain }}"
+# evomaintenance_full_from: "Evomaintenance <{{ evomaintenance_from }}>"
+# evomaintenance_urgency_from: mama.doe@example.com
+# evomaintenance_urgency_tel: "06.00.00.00.00"
 #
-#evolix_users:
+# evolix_users:
 #  foo:
 #    name: foo
 #    uid: 1042

@@ -30,12 +30,13 @@
   check_mode: false
   register: grep_allowusers_ssh
 
-- assert:
+- name: "Check that AllowUsers and AllowGroup do not override each other"
+  assert:
     that: "not (grep_allowusers_ssh.rc == 0 and grep_allowgroups_ssh.rc == 0)"
     msg: "We can't deal with AllowUsers and AllowGroups at the same time"
 
-- set_fact:
-    # If "AllowGroups is present"
+- name: "If AllowGroups is present then use it"
+  set_fact:
     ssh_allowgroups: "{{ (grep_allowgroups_ssh.rc == 0) or (grep_allowusers_ssh.rc != 0) }}"
 
 - name: "Add AllowGroups sshd directive with '{{ evolinux_ssh_group }}'"

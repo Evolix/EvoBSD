@@ -8,7 +8,7 @@
   when: not ansible_check_mode
   ignore_errors: yes
   tags:
-  - commit-etc
+    - commit-etc
 
 - name: /etc modifications are committed
   shell: "git add -A . && git commit -m \"{{ commit_message | default('Ansible run') }}\" --author=\"{{ ansible_env.SUDO_USER | default('Root') }} <{{ ansible_env.SUDO_USER | default('Root') }}@{{ general_technical_realm }}>\""
@@ -18,4 +18,4 @@
   when: not ansible_check_mode and git_status.stdout != ""
   ignore_errors: yes
   tags:
-  - commit-etc
+    - commit-etc
