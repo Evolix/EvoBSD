@@ -8,7 +8,7 @@
     - "ospf6d-check-peers.sh"
   when: group_names | select('search','ospf') | list | count > 0
   tags:
-  - ospf
+    - ospf
 
 - name: Cron job for ospf check scripts is installed
   cron:

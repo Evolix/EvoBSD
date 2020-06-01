@@ -5,7 +5,7 @@
     dest: /usr/share/scripts/bgpd-check-peers.sh
   when: group_names | select('search','bgp') | list | count > 0
   tags:
-  - bgp
+    - bgp
 
 - name: Cron job for bgp check script is installed
   cron:
@@ -15,13 +15,13 @@
   tags:
     - bgp
 
-- name: Create bgp log directory 
+- name: Create bgp log directory
   file:
     path: /var/log/bgp
     state: directory
   when: group_names | select('search','bgp') | list | count > 0
   tags:
-  - bgp
+    - bgp
 
 - name: weekly best routes cron job is installed
   cron:

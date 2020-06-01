@@ -3,10 +3,10 @@
 
 ---
 - hosts: all
-  become: yes
+  become: true
   become_method: su
   user: root
-  gather_facts: no
+  gather_facts: false
 
   tasks:
 

@@ -3,10 +3,10 @@
   command: git status --porcelain
   args:
     chdir: /etc
-  changed_when: False
+  changed_when: false
   register: git_status
   when: not ansible_check_mode
-  ignore_errors: yes
+  ignore_errors: true
   tags:
     - commit-etc
 
@@ -16,6 +16,6 @@
     chdir: /etc
   register: etc_commit_end_evolinux
   when: not ansible_check_mode and git_status.stdout != ""
-  ignore_errors: yes
+  ignore_errors: true
   tags:
     - commit-etc
