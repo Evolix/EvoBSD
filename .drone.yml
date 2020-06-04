@@ -4,6 +4,11 @@ type: docker
 name: default
 
 steps:
+- name: lint markdown files
+  image: pipelinecomponents/remark-lint:latest
+  commands:
+    - "remark --no-stdout --color  --use preset-lint-recommended ."
+
 - name: lint yaml files
   image: pipelinecomponents/yamllint:latest
   commands:
