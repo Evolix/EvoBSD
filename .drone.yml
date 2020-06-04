@@ -4,6 +4,11 @@ type: docker
 name: default
 
 steps:
+- name: lint yaml files
+  image: pipelinecomponents/yamllint:latest
+  commands:
+    - "yamllint ."
+
 - name: lint ansible scripts
   image: pipelinecomponents/ansible-lint:latest
   commands:
