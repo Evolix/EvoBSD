@@ -13,8 +13,10 @@ evolinux_sudo_group: "evolinux-sudo"
 evolinux_root_disable_ssh: true
 #
 # evomaintenance_realm: "example.com"
-# evomaintenance_alert_email: "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
-# evomaintenance_hostname: "{{ inventory_hostname }}.{{ general_technical_realm }}"
+# evomaintenance_alert_email:
+# "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
+# evomaintenance_hostname:
+# "{{ inventory_hostname }}.{{ general_technical_realm }}"
 # evomaintenance_pg_host: Null
 # evomaintenance_pg_passwd: Null
 # evomaintenance_pg_db: Null

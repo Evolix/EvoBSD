@@ -9,9 +9,14 @@
   ignore_errors: true
   tags:
     - commit-etc
-
+# yamllint disable rule:line-length
 - name: /etc modifications are committed
-  shell: "git add -A . && git commit -m \"{{ commit_message | default('Ansible run') }}\" --author=\"{{ ansible_env.SUDO_USER | default('Root') }} <{{ ansible_env.SUDO_USER | default('Root') }}@{{ general_technical_realm }}>\""
+  shell: >
+    git add -A .
+    && git commit
+      -m "{{ commit_message | default('Ansible run') }}"
+      --author="{{ ansible_env.SUDO_USER | default('Root') }}"
+     < "{{ ansible_env.SUDO_USER | default('Root') }}@{{ general_technical_realm }}>"
   args:
     chdir: /etc
   register: etc_commit_end_evolinux
@@ -19,3 +24,4 @@
   ignore_errors: true
   tags:
     - commit-etc
+# yamllint enable rule:line-length

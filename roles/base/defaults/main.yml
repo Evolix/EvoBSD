@@ -6,8 +6,10 @@ general_alert_email: "root@localhost"
 general_technical_realm: "example.com"
 
 evomaintenance_realm: "example.com"
-evomaintenance_alert_email: "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
-evomaintenance_hostname: "{{ inventory_hostname }}.{{ general_technical_realm }}"
+evomaintenance_alert_email:
+  "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
+evomaintenance_hostname:
+  "{{ inventory_hostname }}.{{ general_technical_realm }}"
 evomaintenance_pg_host: null
 evomaintenance_pg_passwd: null
 evomaintenance_pg_db: null
@@ -27,4 +29,7 @@ evomaintenance_hook_commit: true
 evomaintenance_hook_mail: true
 evomaintenance_default_hosts: []
 evomaintenance_additional_hosts: []
-evomaintenance_hosts: "{{ evomaintenance_default_hosts | union(evomaintenance_additional_hosts) | unique }}"
+evomaintenance_hosts: >
+  {{ evomaintenance_default_hosts
+  | union(evomaintenance_additional_hosts)
+  | unique }}

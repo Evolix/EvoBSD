@@ -4,18 +4,26 @@ type: docker
 name: default
 
 steps:
-- name: lint markdown files
-  image: pipelinecomponents/remark-lint:latest
-  commands:
-    - "remark --no-stdout --color  --use preset-lint-recommended ."
+  - name: lint markdown files
+    image: pipelinecomponents/remark-lint:latest
+    commands:
+      - "remark --no-stdout --color  --use preset-lint-recommended ."
 
-- name: lint yaml files
-  image: pipelinecomponents/yamllint:latest
-  commands:
-    - "yamllint ."
+  - name: lint yaml files
+    image: pipelinecomponents/yamllint:latest
+    commands:
+      - "yamllint ."
 
-- name: lint ansible scripts
-  image: pipelinecomponents/ansible-lint:latest
-  commands:
-    - "find . -maxdepth 1 -name '*.yml' | sort | grep -v '.drone.yml' | xargs ansible-playbook --syntax-check --list-tasks"
-    - "find . -maxdepth 1 -name '*.yml' | sort | grep -v '.drone.yml' | xargs ansible-lint"
+  - name: lint ansible scripts
+    image: pipelinecomponents/ansible-lint:latest
+    commands:
+      - >
+        find . -maxdepth 1 -name '*.yml'
+        | sort
+        | grep -v '.drone.yml'
+        | xargs ansible-playbook --syntax-check --list-tasks
+      - >
+        find . -maxdepth 1 -name '*.yml'
+        | sort
+        | grep -v '.drone.yml'
+        | xargs ansible-lint"

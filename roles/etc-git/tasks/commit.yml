@@ -29,6 +29,7 @@
     - etc-git
     - commit-etc
 
+# yamllint disable rule:line-length
 - name: set commit author
   set_fact:
     commit_author: '{% if ansible_env.SUDO_USER is not defined %}root{% else %}{{ ansible_env.SUDO_USER }}{% endif %}'
@@ -47,6 +48,7 @@
   tags:
     - etc-git
     - commit-etc
+# yamllint enable rule:line-length
 
 - debug:
     var: etc_commit_end_run

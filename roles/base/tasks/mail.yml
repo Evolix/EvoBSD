@@ -2,7 +2,8 @@
 - name: Configure rc.local
   lineinfile:
     path: /etc/rc.local
-    line: 'date | mail -s "boot/reboot of $(hostname -s)" {{ general_alert_email }}'
+    line:
+      'date | mail -s "boot/reboot of $(hostname -s)" {{ general_alert_email }}'
     create: true
   tags:
     - misc

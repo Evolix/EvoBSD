@@ -37,7 +37,8 @@
 
 - name: "If AllowGroups is present then use it"
   set_fact:
-    ssh_allowgroups: "{{ (grep_allowgroups_ssh.rc == 0) or (grep_allowusers_ssh.rc != 0) }}"
+    ssh_allowgroups:
+      "{{ (grep_allowgroups_ssh.rc == 0) or (grep_allowusers_ssh.rc != 0) }}"
 
 - name: "Add AllowGroups sshd directive with '{{ evolinux_ssh_group }}'"
   lineinfile:
