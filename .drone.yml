@@ -22,8 +22,9 @@ steps:
         | sort
         | grep -v '.drone.yml'
         | xargs ansible-playbook --syntax-check --list-tasks
+
       - >
         find . -maxdepth 1 -name '*.yml'
         | sort
         | grep -v '.drone.yml'
-        | xargs ansible-lint"
+        | xargs ansible-lint
