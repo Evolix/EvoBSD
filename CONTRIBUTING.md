@@ -10,7 +10,7 @@ created.
 you're updating the CHANGELOG file.
 
 3. Use feature branches for anything else, once they've passed all
-CI tests and have been reviewed by other contributors through a
+CI test, lints and have been reviewed by other contributors through a
 pull request, they may be merged into the dev branch.
 
 
