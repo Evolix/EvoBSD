@@ -9,13 +9,13 @@ used by Evolix.
 Put your public key in the remote root's autorized_keys
 (/root/.ssh/authorized_keys)
 
-1 - Install ansible's prerequisites
+1.  Install ansible's prerequisites
 
 ```
 ansible-playbook prerequisite.yml -CDi hosts -l HOSTNAME
 ```
 
-2 - Run it
+2.  Run it
 
 ```
 ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
@@ -26,19 +26,19 @@ ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
 Changes can be tested by using [Packer](https://www.packer.io/) and
 [vmm(4)](https://man.openbsd.org/vmm.4) :
 
-  * This process depends on the [Go](https://golang.org/) programming language.
+*  This process depends on the [Go](https://golang.org/) programming language.
 
 ```
 # pkg_add go packer
 ```
 
-  * We use the [packer-builder-vmm](https://github.com/prep/packer-builder-vmm) project to bridge Packer and vmm(4)
+*  We use the [packer-builder-vmm](https://github.com/prep/packer-builder-vmm) project to bridge Packer and vmm(4)
 
 ```
 $ go get -u github.com/prep/packer-builder-vmm/cmd/packer-builder-vmm
 ```
 
-  * Here is an example build file
+*  Here is an example build file
 
 ```
 $ vim openbsd.json
@@ -101,25 +101,25 @@ $ vim openbsd.json
     }
 
 
-  * You need your unprivileged user to be able to run vmctl(8) through doas(1)
+*  You need your unprivileged user to be able to run vmctl(8) through doas(1)
 
 ```
 # echo "permit nopass myunprivilegeduser as root cmd /usr/sbin/vmctl" >> /etc/doas.conf
 ```
 
-  * Build the virtual machine
+*  Build the virtual machine
 
 ```
 $ packer build openbsd.json
 ```
 
-  * Start it
+*  Start it
 
 ```
 doas vmctl start evobsd -cL -d output-vmm/evobsd.qcow2
 ```
 
-  * Enable NAT on your host machine
+*  Enable NAT on your host machine
 
 ```
 pass out on em0 inet from tap0:network to any nat-to (em0)
