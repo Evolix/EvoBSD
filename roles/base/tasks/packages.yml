@@ -10,20 +10,20 @@
 - name: Install packages (vim rsync mtr etc)
   openbsd_pkg:
     name:
-    - wget
-    - vim--no_x11
-    - rsync--
-    - mtr--
-    - iftop
-    - sudo--
-    - postgresql-client
+      - wget
+      - vim--no_x11
+      - rsync--
+      - mtr--
+      - iftop
+      - sudo--
+      - postgresql-client
   tags:
     - pkg
 
 - name: Disable sndiod
   service:
     name: sndiod
-    enabled: no
+    enabled: false
     state: stopped
   tags:
     - pkg

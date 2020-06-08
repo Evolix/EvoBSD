@@ -1,30 +1,35 @@
 ---
 ntpd_servers:
-- "ntp.evolix.net"
+  - "ntp.evolix.net"
 
 general_alert_email: "root@localhost"
 general_technical_realm: "example.com"
 
 evomaintenance_realm: "example.com"
-evomaintenance_alert_email: "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
-evomaintenance_hostname: "{{ inventory_hostname }}.{{ general_technical_realm }}"
-evomaintenance_pg_host: Null
-evomaintenance_pg_passwd: Null
-evomaintenance_pg_db: Null
-evomaintenance_pg_table: Null
+evomaintenance_alert_email:
+  "evomaintenance-{{ inventory_hostname }}@{{ evomaintenance_realm }}"
+evomaintenance_hostname:
+  "{{ inventory_hostname }}.{{ general_technical_realm }}"
+evomaintenance_pg_host: null
+evomaintenance_pg_passwd: null
+evomaintenance_pg_db: null
+evomaintenance_pg_table: null
 evomaintenance_from_domain: "{{ evomaintenance_realm }}"
 evomaintenance_from: "evomaintenance@{{ evomaintenance_from_domain }}"
 evomaintenance_full_from: "Evomaintenance <{{ evomaintenance_from }}>"
 evomaintenance_urgency_from: mama.doe@example.com
 evomaintenance_urgency_tel: "06.00.00.00.00"
-evomaintenance_install_vendor: False
-evomaintenance_force_config: True
-evomaintenance_api_endpoint: Null
-evomaintenance_api_key: Null
-evomaintenance_hook_api: True
-evomaintenance_hook_db: False
-evomaintenance_hook_commit: True
-evomaintenance_hook_mail: True
+evomaintenance_install_vendor: false
+evomaintenance_force_config: true
+evomaintenance_api_endpoint: null
+evomaintenance_api_key: null
+evomaintenance_hook_api: true
+evomaintenance_hook_db: false
+evomaintenance_hook_commit: true
+evomaintenance_hook_mail: true
 evomaintenance_default_hosts: []
 evomaintenance_additional_hosts: []
-evomaintenance_hosts: "{{ evomaintenance_default_hosts | union(evomaintenance_additional_hosts) | unique }}"
+evomaintenance_hosts: >
+  {{ evomaintenance_default_hosts
+  | union(evomaintenance_additional_hosts)
+  | unique }}

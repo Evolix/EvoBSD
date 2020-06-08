@@ -39,10 +39,10 @@
     dest: /etc/skel/.profile
     insertafter: EOF
     line: 'trap "doas /usr/share/scripts/evomaintenance.sh" 0'
-    create: yes
+    create: true
   tags:
-     - admin
-     - dotfiles
+    - admin
+    - dotfiles
 
 - name: Add vim configuration to dotfiles for new users
   copy:

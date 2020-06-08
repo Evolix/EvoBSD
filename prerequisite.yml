@@ -2,15 +2,16 @@
 # ansible-playbook prerequisite.yml -CDi hosts -l HOSTNAME
 
 ---
-  - hosts: all
-    become: yes
-    become_method: su
-    user: root
-    gather_facts: no
+- hosts: all
+  become: true
+  become_method: su
+  user: root
+  gather_facts: false
 
-    tasks:
+  tasks:
 
     - name: Install ansible's prerequisite
+      # yamllint disable-line rule:line-length
       raw: export PKG_PATH=http://ftp.eu.openbsd.org/pub/OpenBSD/$(uname -r)/packages/$(uname -p)/; pkg_add -z python-2
 
 # vim:ft=ansible

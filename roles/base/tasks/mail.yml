@@ -2,8 +2,9 @@
 - name: Configure rc.local
   lineinfile:
     path: /etc/rc.local
-    line: 'date | mail -s "boot/reboot of $(hostname -s)" {{ general_alert_email }}'
-    create: yes
+    line:
+      'date | mail -s "boot/reboot of $(hostname -s)" {{ general_alert_email }}'
+    create: true
   tags:
     - misc
 
@@ -12,7 +13,7 @@
     dest: /etc/mail/aliases
     regexp: "# root:"
     replace: "root: {{ general_alert_email }}"
-    backup: no
+    backup: false
   notify:
     - newaliases
   tags:

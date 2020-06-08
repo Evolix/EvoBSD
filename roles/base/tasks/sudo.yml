@@ -4,11 +4,11 @@
   lineinfile:
     dest: /etc/sudoers
     insertafter: '# and set environment variables.'
-    line: '%wheel	ALL=(ALL) SETENV: ALL'
+    line: '%wheel   ALL=(ALL) SETENV: ALL'
     validate: 'visudo -cf %s'
-    backup: no
+    backup: false
   tags:
-     - sudo
+    - sudo
 
 - name: Configure sudoers for evomaintenance and monitoring
   blockinfile:
@@ -19,8 +19,6 @@
       Cmnd_Alias MAINT = /usr/share/scripts/evomaintenance.sh
       %wheel ALL=NOPASSWD: MAINT
     validate: 'visudo -cf %s'
-    backup: no
+    backup: false
   tags:
-     - sudo
-
-
+    - sudo

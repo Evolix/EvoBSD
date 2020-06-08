@@ -3,7 +3,7 @@
   openbsd_pkg:
     name: "openvpn--"
   tags:
-  - openvpn
+    - openvpn
 
 - name: Create /etc/openvpn directory
   file:
@@ -13,59 +13,62 @@
     group: "wheel"
     mode: "0755"
   tags:
-  - openvpn
+    - openvpn
 
 - name: Deploy OpenVPN configuration
-  template:                    
-    src: "server.conf.j2" 
+  template:
+    src: "server.conf.j2"
     dest: "/etc/openvpn/server.conf"
-    mode: "0600"               
+    mode: "0600"
   notify: restart openvpn
   tags:
-  - openvpn
+    - openvpn
 
 - name: Enabling OpenVPN
   service:
     name: openvpn
-    enabled: yes
+    enabled: true
   tags:
-  - openvpn
+    - openvpn
 
 - name: Set OpenVPN flag
   shell: 'rcctl set openvpn flags "--config /etc/openvpn/server.conf"'
   tags:
-  - openvpn
+    - openvpn
 
 - name: Create shellpki user
   user:
     name: "_shellpki"
-    system: yes
-    state: present    
-    system: yes
+    system: true
+    state: present
     home: "/etc/shellpki/"
     shell: "/sbin/nologin"
   tags:
-  - openvpn
+    - openvpn
 
 - name: Copy some shellpki files
-  copy: 
-    src: "{{ item.src }}"      
-    dest: "{{ item.dest }}"    
-    owner: root                
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
     group: wheel
     mode: "{{ item.mode }}"
-    force: yes                 
+    force: true
   with_items:
-          - { src: 'files/shellpki/openssl.cnf', dest: '/etc/shellpki/openssl.cnf', mode: '0640' }
-          - { src: 'files/shellpki/shellpki', dest: '/usr/local/sbin/shellpki', mode: '0755' }
+    - src: 'files/shellpki/openssl.cnf'
+      dest: '/etc/shellpki/openssl.cnf'
+      mode: '0640'
+    - src: 'files/shellpki/shellpki'
+      dest: '/usr/local/sbin/shellpki'
+      mode: '0755'
   tags:
     - openvpn
 
 - name: Deploy DH PARAMETERS
-  template:                    
-    src: "dh2048.pem.j2" 
+  template:
+    src: "dh2048.pem.j2"
     dest: "/etc/shellpki/dh2048.pem"
-    mode: "0600"               
+    mode: "0600"
   tags:
     - openvpn
 
@@ -77,7 +80,7 @@
     group: "wheel"
     mode: "0755"
   tags:
-  - openvpn
+    - openvpn
 
 - name: Include /etc/sudoers.d in sudoers configuration file
   lineinfile:
@@ -91,20 +94,22 @@
     src: "sudo_shellpki"
     dest: "/etc/sudoers.d/shellpki"
     force: true
-    mode: "0440"               
+    mode: "0440"
     validate: '/usr/local/sbin/visudo -cf %s'
   tags:
-  - openvpn
+    - openvpn
 
 - name: Copy check_openvpn
-  copy: 
-    src: "{{ item.src }}"      
-    dest: "{{ item.dest }}"    
-    owner: root                
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"
+    owner: root
     group: wheel
     mode: "{{ item.mode }}"
-    force: yes                 
+    force: true
   with_items:
-          - { src: 'files/check_openvpn.pl', dest: '/usr/local/libexec/nagios/plugins/check_openvpn.pl', mode: '0755' }
+    - src: 'files/check_openvpn.pl'
+      dest: '/usr/local/libexec/nagios/plugins/check_openvpn.pl'
+      mode: '0755'
   tags:
     - openvpn

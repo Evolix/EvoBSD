@@ -10,13 +10,13 @@
   become: true
   become_user: root
   become_method: sudo
-#  become_method: su
+  # become_method: su
 
 
   vars_files:
     - vars/main.yml
-#    - vars/secrets.yml
-#    - vars/openbsd-secret.yml
+  # - vars/secrets.yml
+  # - vars/openbsd-secret.yml
 
   roles:
     - etc-git
@@ -27,9 +27,9 @@
     - nagios-nrpe
     - evocheck
     - post-install
-    #- openvpn
-    #- ospf
-    #- bgp
+    # - openvpn
+    # - ospf
+    # - bgp
 
   post_tasks:
     - include: "tasks/commit_etc_git.yml"
@@ -40,6 +40,5 @@
         tasks_from: exec.yml
 
 #  environment:
-#    PKG_PATH: "http://ftp.openbsd.org/pub/OpenBSD/{{ ansible_distribution_version }}/packages/{{ ansible_architecture }}/"
-
-# vim:ft=ansible
+# yamllint disable-line rule:line-length
+# PKG_PATH: "http://ftp.openbsd.org/pub/OpenBSD/{{ ansible_distribution_version }}/packages/{{ ansible_architecture }}/"

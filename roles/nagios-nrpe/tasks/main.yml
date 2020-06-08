@@ -54,5 +54,5 @@
 - name: Starting and enabling nrpe
   service:
     name: nrpe
-    enabled: yes
+    enabled: true
     state: started

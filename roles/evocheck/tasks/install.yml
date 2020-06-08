@@ -15,7 +15,7 @@
     dest: "{{ evocheck_bin_dir }}/evocheck.sh"
     mode: "0700"
     owner: root
-    force: yes
+    force: true
   tags:
     - evocheck
 
@@ -23,7 +23,7 @@
   copy:
     src: evocheck.cf
     dest: /etc/evocheck.cf
-    force: no
+    force: false
   tags:
     - evocheck
 
@@ -33,6 +33,6 @@
     line: 'sh /usr/share/scripts/evocheck.sh --verbose --cron'
     owner: root
     mode: "0644"
-    create: yes
+    create: true
   tags:
     - evocheck
