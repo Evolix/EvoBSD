@@ -54,8 +54,8 @@ block log all
 #pass quick on $pfsync_if proto pfsync
 
 pass out
-# 9999 = pfstat, 5666 = nrpe
-pass in on $ext_if proto tcp from <evolix> to (self) port { 9999, ssh, 5666 }
+# 5666 = nrpe
+pass in on $ext_if proto tcp from <evolix> to (self) port { ssh, 5666 }
 
 # Block Attack
 # China 144.0.0.0/16 --> SSH
