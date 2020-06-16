@@ -16,7 +16,6 @@
       - mtr--
       - iftop
       - sudo--
-      - postgresql-client
   tags:
     - pkg
 
