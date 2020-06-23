@@ -28,7 +28,7 @@ use strict;
 use Net::Telnet ();
 use Getopt::Long qw(:config no_ignore_case);
 use vars qw($PROGNAME $VERSION);
-use lib "/usr/lib/nagios/plugins/";
+use lib "/usr/local/libexec/nagios/";
 use utils qw(%ERRORS);
 
 $PROGNAME = "check_openvpn";

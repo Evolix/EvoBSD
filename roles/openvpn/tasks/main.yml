@@ -113,3 +113,9 @@
       mode: '0755'
   tags:
     - openvpn
+
+- name: Install needed package for check_openvpn
+  openbsd_pkg:
+    name: "p5-Net-Telnet"
+  tags:
+    - openvpn
