@@ -109,10 +109,10 @@
     job: >
       who
       > /dev/null
-        || /usr/local/bin/git
-          --git-dir=/etc/.git
-          --work-tree=/etc
-          status --short
+      || /usr/local/bin/git
+      --git-dir=/etc/.git
+      --work-tree=/etc
+      status --short
   when: etc_git_monitor_status
   tags:
     - etc-git
@@ -124,10 +124,10 @@
     job: >
       who
       > /dev/null
-        || /usr/local/bin/git
-          --git-dir=/etc/.git
-          --work-tree=/etc
-          status --short
+      || /usr/local/bin/git
+      --git-dir=/etc/.git
+      --work-tree=/etc
+      status --short
     state: absent
   when: not etc_git_monitor_status
   tags:

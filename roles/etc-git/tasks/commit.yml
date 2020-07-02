@@ -52,9 +52,9 @@
   shell: >
     git add -A .
     && git commit
-      -m "{{ commit_message | mandatory }}"
-      --author
-      "{{ commit_author | mandatory }} <{{ commit_email | mandatory }}>"
+    -m "{{ commit_message | mandatory }}"
+    --author
+    "{{ commit_author | mandatory }} <{{ commit_email | mandatory }}>"
   args:
     chdir: /etc
   register: etc_commit_end_run

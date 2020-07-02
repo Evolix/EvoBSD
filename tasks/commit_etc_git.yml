@@ -14,9 +14,9 @@
   shell: >
     git add -A .
     && git commit
-      -m "{{ commit_message | default('Ansible run') }}"
-      --author="{{ ansible_env.SUDO_USER | default('Root') }}"
-     < "{{ ansible_env.SUDO_USER | default('Root') }}@{{ general_technical_realm }}>"
+    -m "{{ commit_message | default('Ansible run') }}"
+    --author="{{ ansible_env.SUDO_USER | default('Root') }}"
+    "<{{ ansible_env.SUDO_USER | default('Root') }}@{{ general_technical_realm }}>"
   args:
     chdir: /etc
   register: etc_commit_end_evolinux
