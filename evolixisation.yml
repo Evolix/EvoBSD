@@ -1,6 +1,6 @@
 # Playbook command
-# First use (become_method: su) :
-# ansible-playbook evolixisation.yml --ask-vault-pass -CDi hosts -l HOSTNAME
+# First use (become_method: su, and var_files uncommented) :
+# ansible-playbook evolixisation.yml --ask-vault-pass -CDki hosts -l HOSTNAME -u root
 # Subsequent use (become_method: sudo) :
 # ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
 
