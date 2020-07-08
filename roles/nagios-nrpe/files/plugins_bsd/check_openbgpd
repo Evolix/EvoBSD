@@ -5,6 +5,18 @@
 #
 # 2009.11.12 #*#*# andrew fresh <andrew@afresh1.com>
 ########################################################################
+#
+# MODIFIED VERSION FOR THE NEEDS OF EVOLIX
+# By Jérémy Dubois <jdubois@evolix.fr>
+#
+# Line 51 :
+#   added « open STDERR, '>&STDOUT'; »
+#
+# Lines 123 to 126 :
+#   added « or exit 2; »
+#   commented « or die $! » and the 2 lines below
+#
+########################################################################
 use strict;
 use warnings;
 
@@ -36,6 +48,7 @@ my $BGPCTL   = '/usr/sbin/bgpctl';
 use POSIX;
 use Config;
 my $PREFIX;
+open STDERR, '>&STDOUT';
 
 BEGIN {
     ## no critic 'warnings'
@@ -107,9 +120,10 @@ sub read_status {
     }
     ## no critic 'die'
     close $fh
-        or die $!
-        ? "Error closing sysctl pipe: $!\n"
-        : "Exit status $? from sysctl\n";
+        or exit 2;
+#        or die $!
+#        ? "Error closing sysctl pipe: $!\n"
+#        : "Exit status $? from sysctl\n";
 
     return grep { exists $_->{neighbor} && $_->{as} ne 'AS' } @S;
 }
