@@ -39,13 +39,13 @@
     mode: "0755"
     force: "{{ item.force }}"
   with_items:
-    - { name: 'check_carp_if', force: true }
-    - { name: 'check_connections_state.sh', force: false }
-    - { name: 'check_ipsecctl.sh', force: false }
-    - { name: 'check_openbgpd', force: true }
-    - { name: 'check_openvpn', force: false }
-    - { name: 'check_openvpn.pl', force: true }
-    - { name: 'check_ospfd_simple', force: true }
+    - {name: 'check_carp_if', force: true}
+    - {name: 'check_connections_state.sh', force: false}
+    - {name: 'check_ipsecctl.sh', force: false}
+    - {name: 'check_openbgpd', force: true}
+    - {name: 'check_openvpn', force: false}
+    - {name: 'check_openvpn.pl', force: true}
+    - {name: 'check_ospfd_simple', force: true}
   notify: restart nrpe
 
 - name: Nagios plugins are installed - template
@@ -57,8 +57,8 @@
     mode: "0755"
     force: "{{ item.force }}"
   with_items:
-    - { name: 'check_pf_states', force: false }
-    - { name: 'check_free_mem.sh', force: true }
+    - {name: 'check_pf_states', force: false}
+    - {name: 'check_free_mem.sh', force: true}
   notify: restart nrpe
 
 - name: Starting and enabling nrpe
