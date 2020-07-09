@@ -32,23 +32,33 @@
 
 - name: Nagios plugins are installed
   copy:
-    src: plugins_bsd/
-    dest: /usr/local/libexec/nagios/plugins/
+    src: plugins_bsd/{{ item.name }}
+    dest: /usr/local/libexec/nagios/plugins/{{ item.name }}
     owner: root
     group: wheel
     mode: "0755"
+    force: "{{ item.force }}"
+  with_items:
+    - { name: 'check_carp_if', force: true }
+    - { name: 'check_connections_state.sh', force: false }
+    - { name: 'check_ipsecctl.sh', force: false }
+    - { name: 'check_openbgpd', force: true }
+    - { name: 'check_openvpn', force: false }
+    - { name: 'check_openvpn.pl', force: true }
+    - { name: 'check_ospfd_simple', force: true }
   notify: restart nrpe
 
 - name: Nagios plugins are installed - template
   template:
-    src: plugins_bsd/{{ item }}.j2
-    dest: /usr/local/libexec/nagios/plugins/{{ item }}
+    src: plugins_bsd/{{ item.name }}.j2
+    dest: /usr/local/libexec/nagios/plugins/{{ item.name }}
     owner: root
     group: wheel
     mode: "0755"
+    force: "{{ item.force }}"
   with_items:
-    - 'check_pf_states'
-    - 'check_free_mem.sh'
+    - { name: 'check_pf_states', force: false }
+    - { name: 'check_free_mem.sh', force: true }
   notify: restart nrpe
 
 - name: Starting and enabling nrpe
