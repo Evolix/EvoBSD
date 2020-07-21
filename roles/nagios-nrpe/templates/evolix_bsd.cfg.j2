@@ -19,7 +19,7 @@ command[check_swap]=/usr/local/libexec/nagios/check_swap --no-swap=ok -a -w 30% 
 # Generic services checks
 command[check_smtp]=/usr/local/libexec/nagios/check_smtp -H localhost -f {{ general_alert_email }}
 command[check_dns]=/usr/local/libexec/nagios/check_dns -H evolix.net
-command[check_ntp]=/usr/local/libexec/nagios/check_ntp -H ntp.evolix.net
+command[check_ntp]=/usr/local/libexec/nagios/check_ntp -H ntp-check.evolix.net
 command[check_ssh]=/usr/local/libexec/nagios/check_ssh -p 22 localhost
 command[check_mailq]=doas /usr/local/libexec/nagios/check_mailq -w 10 -c 20
 
