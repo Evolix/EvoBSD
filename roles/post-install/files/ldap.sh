@@ -119,7 +119,7 @@ objectClass: EvoService
 ipServicePort: 22
 ServiceName: openssh
 ServiceType: ssh
-ServiceVersion: OpenSSH 6.7
+ServiceVersion: OpenSSH 8.3
 
 dn: ServiceName=opensmtpd,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
 ipServiceProtocol: tcp
@@ -128,13 +128,20 @@ objectClass: EvoService
 ServiceName: opensmtpd
 ipServicePort: 25
 ServiceType: smtp
-ServiceVersion: OpenSMTPD 5.4.3
+ServiceVersion: OpenSMTPD 6.7.1p1
 
 dn: ServiceName=ntp,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
 NagiosEnabled: TRUE
 objectClass: EvoService
 ServiceName: ntp
 ServiceType: ntp
-ServiceVersion: OpenNTPd 4.6
+ServiceVersion: OpenNTPd 6.2p3
+
+dn: ServiceName=packetfilter,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
+NagiosEnabled: TRUE
+objectClass: EvoService
+ServiceName: packetfilter
+ServiceType: firewall
+ServiceVersion: packetfilter
 
 EOT
