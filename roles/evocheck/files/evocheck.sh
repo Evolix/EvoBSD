@@ -3,7 +3,7 @@
 # EvoCheck
 # Script to verify compliance of an OpenBSD server powered by Evolix
 
-readonly VERSION="6.6.2"
+readonly VERSION="6.7.3"
 
 # Disable LANG*
 
@@ -148,11 +148,15 @@ check_gitperms(){
 
 check_advbase(){
     if ls /etc/hostname.carp* 1> /dev/null 2>&1; then
+        bad_advbase=0
         for advbase in $(ifconfig carp | grep advbase | awk -F 'advbase' '{print $2}' | awk '{print $1}' | xargs); do
-        if [[ "$advbase" -gt 1 ]]; then
-            failed "IS_ADVBASE" "At least one CARP interface has advbase greater than 5 seconds!"
+        if [[ "$advbase" -gt 5 ]]; then
+            bad_advbase=1
         fi
         done
+        if [[ "$bad_advbase" -eq 1 ]]; then
+            failed "IS_ADVBASE" "At least one CARP interface has advbase greater than 5 seconds!"
+        fi
     fi
 }
 
@@ -217,20 +221,14 @@ check_ttyc0secure(){
 }
 
 check_customsyslog(){
-    grep -q Evolix /etc/newsyslog.conf || failed "IS_CUSTOMSYSLOG" ""
+    grep -q EvoBSD /etc/newsyslog.conf || failed "IS_CUSTOMSYSLOG" ""
 }
 
 check_sudomaint(){
     file=/etc/sudoers
     grep -q "Cmnd_Alias MAINT = /usr/share/scripts/evomaintenance.sh" $file \
-    && grep -q "ADMIN ALL=NOPASSWD: MAINT" $file \
+    && grep -q "%wheel ALL=NOPASSWD: MAINT" $file \
     || failed "IS_SUDOMAINT" ""
-}
-
-check_postgresql(){
-    if ! is_installed postgresql-client; then
-        failed "IS_POSTGRESQL" "postgresql-client is not installed! Please add with pkg_add postgresql-client"
-    fi
 }
 
 check_nrpe(){
@@ -301,6 +299,28 @@ check_sync(){
     fi
 }
 
+check_defaultroute(){
+    if [ -f /etc/mygate ]; then
+        file_route=$(cat /etc/mygate)
+        used_route=$(route -n show -priority 8 | grep default | awk '{print $2}')
+        if [ "$file_route" != "$used_route" ]; then
+            failed "IS_DEFAULTROUTE" "The default route in /etc/mygate is different from the one currently used"
+        fi
+    else
+        failed "IS_DEFAULTROUTE" "The file /etc/mygate does not exist. Make sure you have the same default route in this file as the one currently in use."
+    fi
+}
+
+check_ntp(){
+    if grep -q "server ntp.evolix.net" /etc/ntpd.conf; then
+        if [ $(wc -l /etc/ntpd.conf | awk '{print $1}') -ne 1 ]; then
+            failed "IS_NTP" "The /etc/ntpd.conf file should only contains \"server ntp.evolix.net\"."
+        fi
+    else
+        failed "IS_NTP" "The configuration in /etc/ntpd.conf is not compliant. It should contains \"server ntp.evolix.net\"."
+    fi
+}
+
 
 main() {
     # Default return code : 0 = no error
@@ -328,7 +348,6 @@ main() {
     test "${IS_TTYC0SECURE:=1}" = 1 && check_ttyc0secure
     test "${IS_CUSTOMSYSLOG:=1}" = 1 && check_customsyslog
     test "${IS_SUDOMAINT:=1}" = 1 && check_sudomaint
-    test "${IS_POSTGRESQL:=1}" = 1 && check_postgresql
     test "${IS_NRPE:=1}" = 1 && check_nrpe
     test "${IS_RSYNC:=1}" = 1 && check_rsync
     test "${IS_CRONPATH:=1}" = 1 && check_cronpath
@@ -339,6 +358,8 @@ main() {
     test "${IS_EVOMAINTENANCEUSERS:=1}" = 1 && check_evomaintenanceusers
     test "${IS_EVOMAINTENANCECONF:=1}" = 1 && check_evomaintenanceconf
     test "${IS_SYNC:=1}" = 1 && check_sync
+    test "${IS_DEFAULTROUTE:=1}" = 1 && check_defaultroute
+    test "${IS_NTP:=1}" = 1 && check_ntp
 
     exit ${RC}
 }
