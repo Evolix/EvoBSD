@@ -3,7 +3,7 @@
 # Part of the EvoBSD distribution.
 #
 # This is an Ansible managed file !
-# For local modifications use the /etc/nrpe.d/zzz-evolix.cfg file instead
+# For local modifications use the /etc/nrpe.d/zzz_evolix.cfg file instead
 
 # Allowed IPs
 allowed_hosts={{ nagios_nrpe_allowed_hosts | join(',') }}
@@ -48,4 +48,4 @@ command[check_connections_state]=doas /usr/local/libexec/nagios/plugins/check_co
 command[check_packetfilter]=doas /usr/local/libexec/nagios/plugins/check_packetfilter.sh
 
 # This is an Ansible managed file !
-# For local modifications use the /etc/nrpe.d/zzz-evolix.cfg file instead
+# For local modifications use the /etc/nrpe.d/zzz_evolix.cfg file instead
