@@ -6,8 +6,9 @@ HardwareMark=$(sysctl hw.vendor| sed 's#hw.vendor=##')
 HardwareModel=$(sysctl hw.product| sed 's#hw.product=##')
 computerIP=$(ifconfig egress | grep inet | awk -v OFS="\n" '{ print $2, $NF }'| head -1)
 computerKernel=$(sysctl kern.osrelease | sed 's#kern.osrelease=##')
-computerOS=OpenBSD $computerKernel
-HardwareSerial=$(sysctl hw.serialno| sed 's#hw.serialno=##')
+computerOS="OpenBSD $computerKernel"
+HardwareSerial=$(sysctl hw.serialno 2>/dev/null | sed 's#hw.serialno=##')
+if [ -z $HardwareSerial ]; then sysctl hw | grep -qi qemu && HardwareSerial="Not Specified"; fi
 clientNumber="XXX"
 cpuMark=$(sysctl hw.model| sed 's#hw.model=##')
 cpuModel=$(sysctl hw.model| sed 's#hw.model=##')
