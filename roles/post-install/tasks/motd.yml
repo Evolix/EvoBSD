@@ -1,0 +1,14 @@
+---
+- name: Deploy dynamic motd script for CARP master or backup
+  copy:
+    src: motd-carp-state.sh
+    dest: /usr/share/scripts/motd-carp-state.sh
+    owner: root
+    group: wheel
+    mode: '0755'
+
+- name: Cron job for dynamic motd script is installed
+  cron:
+    name: dynamic motd for CARP
+    job: "/bin/sh /usr/share/scripts/motd-carp-state.sh"
+    disabled: true
