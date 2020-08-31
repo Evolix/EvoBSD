@@ -27,6 +27,7 @@ command[check_mailq]=doas /usr/local/libexec/nagios/check_mailq -w 10 -c 20
 command[check_imap]=/usr/local/libexec/nagios/check_imap -H localhost
 command[check_http]=/usr/local/libexec/nagios/check_http -H localhost -p 80
 command[check_bind]=/usr/local/libexec/nagios/check_dig -l evolix.net -H localhost
+command[check_unbound]=/usr/local/libexec/nagios/check_dig -l evolix.net -H localhost
 command[check_proxy]=/usr/local/libexec/nagios/check_tcp -p PORT
 command[check_smb]=/usr/local/libexec/nagios/check_tcp -H IPLOCALE -p 445
 command[check_mysql]=/usr/local/libexec/nagios/check_mysql -H 127.0.0.1 -f /etc/nrpe.d/.my.cnf
