@@ -63,8 +63,8 @@ HardwareSize: $cpuFreq
 HardwareType: CPU
 HardwareModel: $cpuModel
 
-dn: HardwareName=ram0,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
-HardwareName: ram0
+dn: HardwareName=mem,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
+HardwareName: mem
 objectClass: EvoHardware
 HardwareSize: $mem
 HardwareType: mem
