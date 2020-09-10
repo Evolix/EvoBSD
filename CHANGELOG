@@ -1,0 +1,33 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [6.7.1] - 2020-09-10
+
+### Added
+
+- Add completions functions in root's profile dotfile
+- Add check_connections_state.sh NRPE plugin
+- Add an evocheck role
+- Add stricter ssh and doas access
+- Add an openvpn role
+- Add an OpenBGPd NRPE plugin
+- Add ospf and bgp roles
+- Add an unbound NRPE check since it is part of the base system
+- Add a motd-carp-state.sh script that checks the carp state and generates the /etc/motd file
+
+### Changed
+
+- Disable sndiod since it is not required on serveurs
+- Replace sudo with doas for script executions
+- Update evomaintenance version to 0.6.3
+- Disable mouse function in vim configuration   
+- Drop openup since syspatch can apply stable patches now
+- Update evobackup script
+- Rewrite newsyslog configuration
+- Drop postgresql-client package since evomaintenance use an API now
