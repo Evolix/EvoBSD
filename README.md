@@ -17,6 +17,14 @@ ansible-playbook prerequisite.yml -CDi hosts -l HOSTNAME
 
 2.  Run it
 
+First use (become_method: su, and var_files uncommented) :
+
+```
+ansible-playbook evolixisation.yml --ask-vault-pass -CDki hosts -l HOSTNAME -u root
+```
+
+Subsequent use (become_method: sudo) :
+
 ```
 ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
 ```
@@ -28,96 +36,36 @@ Changes can be tested by using [Packer](https://www.packer.io/) and
 
 *   This process depends on the [Go](https://golang.org/) programming language.
 
-```
-# pkg_add go packer
-```
+## Packages
 
-*   We use the [packer-builder-vmm](https://github.com/prep/packer-builder-vmm) project to bridge Packer and vmm(4)
+Needing a Golang eco system and some basics
 
-```
-$ go get -u github.com/prep/packer-builder-vmm/cmd/packer-builder-vmm
-```
+````
+pkg_add go-- packer-- git--
+````
 
-*   Here is an example build file
+*   We use the [packer-builder-openbsd-vmm](https://github.com/double-p/packer-builder-openbsd-vmm) project to bridge Packer and vmm(4)
 
-```
-$ vim openbsd.json
-```
+````
+git clone https://github.com/double-p/packer-builder-openbsd-vmm.git
+````
 
-    {
-      "description": "OpenBSD installation on vmm(4)",
+## builds
 
-      "variables": {
-        "hostname":    "evobsd",
-        "domain":      "example.com",
+Set ````GOPATH```` (default: ~/go), if the 1.4GB dependencies wont fit.
 
-        "password": "evolix"
-      },
-
-      "builders": [
-        {
-          "type":      "vmm",
-          "vm_name":   "evobsd",
-          "disk_size": "2G",
-          "format":    "qcow2",
-          "mem_size":  "1024M",
-
-          "iso_urls":          ["downloads/install64.fs", "https://ftp.nluug.nl/pub/OpenBSD/6.4/amd64/install64.fs"],
-          "iso_checksum":      "7aa4344cb39efbf67300f97ac7eec005b607e8c19d4e31a0a593a8ee2b7136e4",
-          "iso_checksum_type": "sha256",
-
-          "boot_wait": "10s",
-          "boot_command": [
-            "S<enter>",
-
-            "cat <<EOF >disklabel.template<enter>",
-            "/ 1G-* 100%<enter>",
-            "EOF<enter>",
-
-            "cat <<EOF >install.conf<enter>",
-            "System hostname = {{user `hostname`}}<enter>",
-            "DNS domain name = {{user `domain`}}<enter>",
-            "Password for root account = {{user `password`}}<enter>",
-            "Do you expect to run the X Window System = no<enter>",
-            "Setup a user = no<enter>",
-            "Which disk is the root disk = sd1<enter>",
-            "Use (A)uto layout, (E)dit auto layout, or create (C)ustom layout = c<enter>",
-            "URL to autopartitioning template for disklabel = file://disklabel.template<enter>",
-            "Location of sets = disk<enter>",
-            "Is the disk partition already mounted = no<enter>",
-            "Set name(s) = -bsd.rd<enter>",
-            "Set name(s) = done<enter>",
-            "Directory does not contain SHA256.sig. Continue without verification = yes<enter>",
-            "What timezone are you in = Europe/Paris<enter>",
-            "EOF<enter>",
-
-            "install -af install.conf<enter>",
-            "<wait2m>",
-
-            "/sbin/halt -p<enter><wait15>"
-          ]
-        }
-      ]
-    }
-
+````
+make
+make install
+````
 
 *   You need your unprivileged user to be able to run vmctl(8) through doas(1)
 
 ```
-# echo "permit nopass myunprivilegeduser as root cmd /usr/sbin/vmctl" >> /etc/doas.conf
+echo "permit nopass myunprivilegeduser as root cmd /usr/sbin/vmctl" >> /etc/doas.conf
 ```
 
-*   Build the virtual machine
-
-```
-$ packer build openbsd.json
-```
-
-*   Start it
-
-```
-doas vmctl start evobsd -cL -d output-vmm/evobsd.qcow2
-```
+See packer-builder-openbsd-vmm/examples/README.examples for further instructions
 
 *   Enable NAT on your host machine
 
