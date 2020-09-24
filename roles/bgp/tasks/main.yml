@@ -23,15 +23,30 @@
   tags:
     - bgp
 
-- name: weekly best routes cron job is installed
+- name: daily best routes cron job is installed
   cron:
     name: bgp best routes
     minute: 0
     hour: 4
-    weekday: 0
     job: >
       /usr/sbin/bgpctl show rib selected
-      > /var/log/bgp/rib-selected-$(date +\\%F)
+      > /var/log/bgp/rib-selected-$(date +\%F)
+  when: group_names | select('search','bgp') | list | count > 0
+  tags:
+    - bgp
+
+- name: weekly best routes clean up cron job is installed
+  cron:
+    name: bgp best routes clean up
+    minute: 0
+    hour: 4
+    weekday: 0
+    job: >
+      /usr/bin/find /var/log/bgp/
+      -type f
+      -name "rib-selected-*"
+      -mtime +30
+      -exec rm {} \+
   when: group_names | select('search','bgp') | list | count > 0
   tags:
     - bgp
