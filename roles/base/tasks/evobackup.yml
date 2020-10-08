@@ -19,3 +19,13 @@
     create: true
   tags:
     - evobackup
+
+- name: Delete evobackup root crontab replaced by daily.local cron
+  lineinfile:
+    path: /var/cron/tabs/root
+    regexp: '/usr/share/scripts/zzz_evobackup'
+    validate: /usr/bin/crontab %s
+    state: absent
+  tags:
+    - evobackup
+
