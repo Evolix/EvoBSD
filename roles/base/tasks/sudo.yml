@@ -1,4 +1,13 @@
 ---
+- name: Configure sudoers umask
+  lineinfile:
+    dest: /etc/sudoers
+    insertafter: '# Defaults specification'
+    line: 'Defaults umask=0077'
+    validate: 'visudo -cf %s'
+  tags:
+    - sudo
+
 # dont't break the tab!
 - name: Allow wheel group to run command as root in sudo
   lineinfile:
