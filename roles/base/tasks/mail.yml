@@ -4,7 +4,17 @@
     path: /etc/rc.local
     line:
       'date | mail -s "boot/reboot of $(hostname -s)" {{ general_alert_email }}'
+    insertbefore: 'echo'
     create: true
+  tags:
+    - misc
+
+- name: Delete rc.local entry of boot/reboot not precising hostname
+  lineinfile:
+    path: /etc/rc.local
+    regexp:
+      "^.* mail -s (?!.*of.*).+$"
+    state: absent
   tags:
     - misc
 
