@@ -1,3 +1,8 @@
 ---
 - name: newaliases
   shell: smtpctl update table aliases
+
+- name: remount /tmp
+  command: mount -u -o noexec /tmp
+  args:
+    warn: no
