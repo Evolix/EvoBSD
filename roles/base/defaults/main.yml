@@ -33,3 +33,5 @@ evomaintenance_hosts: >
   {{ evomaintenance_default_hosts
   | union(evomaintenance_additional_hosts)
   | unique }}
+
+cron_root_path: "/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin"
