@@ -11,3 +11,4 @@
 - include: cron.yml
 - include: fstab.yml
 - include: cron.yml
+- include: fstab.yml
