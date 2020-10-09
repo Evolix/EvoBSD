@@ -10,6 +10,15 @@
   tags:
     - evobackup
 
+- name: Fetch daily.local content
+  command: 'grep "sh /usr/share/scripts/zzz_evobackup" /etc/daily.local'
+  check_mode: false
+  register: daily_local_content
+  failed_when: false
+  changed_when: false
+  tags:
+    - evobackup
+
 - name: Add evobackup cron (disabled)
   lineinfile:
     path: /etc/daily.local
@@ -17,6 +26,8 @@
     owner: root
     mode: "0644"
     create: true
+  when:
+    - not (daily_local_content.stdout | regex_search('sh /usr/share/scripts/zzz_evobackup'))
   tags:
     - evobackup
 
