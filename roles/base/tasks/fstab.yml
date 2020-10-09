@@ -1,7 +1,7 @@
 ---
 - name: Fetch fstab content
   command: "grep -v '^#' /etc/fstab"
-  check_mode: no
+  check_mode: false
   register: fstab_content
   failed_when: false
   changed_when: false
@@ -14,8 +14,8 @@
     regexp: '(\s+/\s+\S+\s+rw)(.*)'
     replace: '\1,softdep\2'
   when:
-  - fstab_content.stdout | regex_search('\s/\s')
-  - not (fstab_content.stdout | regex_search('\s+/\s+\S+\s+rw,softdep'))
+    - fstab_content.stdout | regex_search('\s/\s')
+    - not (fstab_content.stdout | regex_search('\s+/\s+\S+\s+rw,softdep'))
   tags:
     - fstab
 
@@ -25,8 +25,8 @@
     regexp: '(\s+/var\s+\S+\s+rw)(.*)'
     replace: '\1,softdep\2'
   when:
-  - fstab_content.stdout | regex_search('\s/var\s')
-  - not (fstab_content.stdout | regex_search('\s+/var\s+\S+\s+rw,softdep'))
+    - fstab_content.stdout | regex_search('\s/var\s')
+    - not (fstab_content.stdout | regex_search('\s+/var\s+\S+\s+rw,softdep'))
   tags:
     - fstab
 
@@ -36,8 +36,8 @@
     regexp: '(\s+/usr\s+\S+\s+rw)(.*)'
     replace: '\1,softdep\2'
   when:
-  - fstab_content.stdout | regex_search('\s/usr\s')
-  - not (fstab_content.stdout | regex_search('\s+/usr\s+\S+\s+rw,softdep'))
+    - fstab_content.stdout | regex_search('\s/usr\s')
+    - not (fstab_content.stdout | regex_search('\s+/usr\s+\S+\s+rw,softdep'))
   tags:
     - fstab
 
@@ -47,8 +47,9 @@
     regexp: '(\s+/tmp\s+\S+\s+rw(,softdep)*)(.*)'
     replace: '\1,noexec\3'
   when:
-  - fstab_content.stdout | regex_search('\s/tmp\s')
-  - not (fstab_content.stdout | regex_search('\s+/tmp\s+\S+\s+rw,(softdep,)*noexec'))
+    - fstab_content.stdout | regex_search('\s/tmp\s')
+    - not (fstab_content.stdout
+      | regex_search('\s+/tmp\s+\S+\s+rw,(softdep,)*noexec'))
   tags:
     - fstab
 
@@ -59,8 +60,9 @@
     replace: '\1,softdep\2'
   notify: remount /tmp
   when:
-  - fstab_content.stdout | regex_search('\s/tmp\s')
-  - not (fstab_content.stdout | regex_search('\s+/tmp\s+\S+\s+rw,softdep'))
+    - fstab_content.stdout | regex_search('\s/tmp\s')
+    - not (fstab_content.stdout
+      | regex_search('\s+/tmp\s+\S+\s+rw,(noexec,)*softdep'))
   tags:
     - fstab
 
@@ -70,7 +72,7 @@
     regexp: '(\s+/home\s+\S+\s+rw)(.*)'
     replace: '\1,softdep\2'
   when:
-  - fstab_content.stdout | regex_search('\s/home\s')
-  - not (fstab_content.stdout | regex_search('\s+/home\s+\S+\s+rw,softdep'))
+    - fstab_content.stdout | regex_search('\s/home\s')
+    - not (fstab_content.stdout | regex_search('\s+/home\s+\S+\s+rw,softdep'))
   tags:
     - fstab

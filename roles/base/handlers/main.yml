@@ -5,4 +5,4 @@
 - name: remount /tmp
   command: mount -u -o noexec /tmp
   args:
-    warn: no
+    warn: false
