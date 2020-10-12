@@ -1,3 +1,4 @@
+# yamllint disable rule:line-length
 # Playbook command
 # First use (become_method: su, and var_files uncommented) :
 # ansible-playbook evolixisation.yml --ask-vault-pass -CDki hosts -l HOSTNAME -u root
@@ -40,5 +41,4 @@
         tasks_from: exec.yml
 
 #  environment:
-# yamllint disable-line rule:line-length
 # PKG_PATH: "http://ftp.openbsd.org/pub/OpenBSD/{{ ansible_distribution_version }}/packages/{{ ansible_architecture }}/"
