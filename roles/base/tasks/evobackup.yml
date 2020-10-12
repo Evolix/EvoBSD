@@ -27,7 +27,8 @@
     mode: "0644"
     create: true
   when:
-    - not (daily_local_content.stdout | regex_search('sh /usr/share/scripts/zzz_evobackup'))
+    - not (daily_local_content.stdout
+      | regex_search('sh /usr/share/scripts/zzz_evobackup'))
   tags:
     - evobackup
 
