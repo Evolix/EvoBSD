@@ -10,23 +10,23 @@ collectd_interval: "300"
 
 # exec plugin
 
-collectd_plugin_exec: False # Set to true only if one of the exec plugins below is also set to true
+collectd_plugin_exec: false  # Set to true only if one of the exec plugins below is also set to true
 collectd_plugin_exec_interval: "{{ collectd_interval }}"
-collectd_plugin_exec_ifq_drops: False
-collectd_plugin_exec_dns_stats: False # Based on unbound
+collectd_plugin_exec_ifq_drops: false
+collectd_plugin_exec_dns_stats: false  # Based on unbound
 collectd_plugin_exec_dns_stats_interval: "{{ collectd_interval }}"
 
 # others plugins
 
-collectd_plugin_cpu: True
-collectd_plugin_df: True
-collectd_plugin_disk: True
-collectd_plugin_interface: True
-collectd_plugin_load: True
-collectd_plugin_memory: True
-collectd_plugin_pf: True
-collectd_plugin_processes: True
-collectd_plugin_swap: True
-collectd_plugin_tcpconns: True
-collectd_plugin_uptime: True
-collectd_plugin_users: True
+collectd_plugin_cpu: true
+collectd_plugin_df: true
+collectd_plugin_disk: true
+collectd_plugin_interface: true
+collectd_plugin_load: true
+collectd_plugin_memory: true
+collectd_plugin_pf: true
+collectd_plugin_processes: true
+collectd_plugin_swap: true
+collectd_plugin_tcpconns: true
+collectd_plugin_uptime: true
+collectd_plugin_users: true

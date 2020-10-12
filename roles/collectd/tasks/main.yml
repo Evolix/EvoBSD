@@ -3,7 +3,7 @@
   openbsd_pkg:
     name: "collectd"
   tags:
-  - collectd
+    - collectd
 
 - name: Deploy Collectd configuration
   template:
@@ -11,14 +11,14 @@
     dest: "/etc/collectd.conf"
   notify: restart collectd
   tags:
-  - collectd
+    - collectd
 
 - name: Enabling Collectd
   service:
     name: collectd
-    enabled: yes
+    enabled: true
   tags:
-  - collectd
+    - collectd
 
 - name: Create scripts directory for exec plugins
   file:
@@ -26,17 +26,17 @@
     state: directory
   when: collectd_plugin_exec
   tags:
-  - collectd
+    - collectd
 
 - name: Copy ifq_drops.sh
   copy:
     src: ifq_drops.sh
     dest: /usr/local/share/collectd/scripts/ifq_drops.sh
     mode: 0755
-    force: yes                 
+    force: true
   when: collectd_plugin_exec_ifq_drops
   tags:
-  - collectd
+    - collectd
 
 - name: Remove ifq_drops.sh
   file:
@@ -44,29 +44,30 @@
     state: absent
   when: not collectd_plugin_exec_ifq_drops
   tags:
-  - collectd
+    - collectd
 
 - name: Copy dns_stats.sh
-  copy: 
+  copy:
     src: dns_stats.sh
     dest: /usr/local/share/collectd/scripts/dns_stats.sh
     mode: 0755
-    force: yes                 
+    force: true
   when: collectd_plugin_exec_dns_stats
   tags:
-  - collectd
+    - collectd
 
 - name: Add stats DNS on unbound
   lineinfile:
     path: /var/unbound/etc/unbound.conf
     regexp: 'statistics-interval'
-    line: '    statistics-interval: {{ collectd_plugin_exec_dns_stats_interval }}'
+    line:
+      '    statistics-interval: {{ collectd_plugin_exec_dns_stats_interval }}'
     insertafter: 'hide-version:'
-    backup: yes
+    backup: true
   notify: reload unbound
   when: collectd_plugin_exec_dns_stats
   tags:
-  - collectd
+    - collectd
 
 - name: Remove dns_stats.sh
   file:
@@ -74,18 +75,18 @@
     state: absent
   when: not collectd_plugin_exec_dns_stats
   tags:
-  - collectd
+    - collectd
 
 - name: Remove stats DNS on unbound
   lineinfile:
     path: /var/unbound/etc/unbound.conf
     regexp: 'statistics-interval'
-    backup: yes
+    backup: true
     state: absent
   notify: reload unbound
   when: not collectd_plugin_exec_dns_stats
   tags:
-  - collectd
+    - collectd
 
 - name: Add doas configuration for dns_stats.sh execution
   lineinfile:
@@ -93,7 +94,7 @@
     line: 'permit nopass _collectd as root cmd /bin/cat'
   when: collectd_plugin_exec_dns_stats
   tags:
-  - collectd
+    - collectd
 
 - name: Delete doas configuration for dns_stats.sh execution
   lineinfile:
@@ -102,4 +103,4 @@
     state: absent
   when: not collectd_plugin_exec_dns_stats
   tags:
-  - collectd
+    - collectd
