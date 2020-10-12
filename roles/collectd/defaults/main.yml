@@ -10,7 +10,6 @@ collectd_interval: "300"
 
 # exec plugin
 
-collectd_plugin_exec: false  # Set to true only if one of the exec plugins below is also set to true
 collectd_plugin_exec_interval: "{{ collectd_interval }}"
 collectd_plugin_exec_ifq_drops: false
 collectd_plugin_exec_dns_stats: false  # Based on unbound

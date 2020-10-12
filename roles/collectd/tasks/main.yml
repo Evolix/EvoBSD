@@ -24,7 +24,7 @@
   file:
     path: /usr/local/share/collectd/scripts
     state: directory
-  when: collectd_plugin_exec
+  when: collectd_plugin_exec_ifq_drops or collectd_plugin_exec_dns_stats
   tags:
     - collectd
 

@@ -6,7 +6,7 @@ LoadPlugin syslog
   LogLevel warning
 </Plugin>
 
-{% if collectd_plugin_exec is sameas true %}
+{% if (collectd_plugin_exec_ifq_drops is sameas true) or (collectd_plugin_exec_dns_stats is sameas true) %}
 <LoadPlugin exec>
   Interval {{ collectd_plugin_exec_interval }}
 </LoadPlugin>
