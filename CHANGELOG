@@ -7,6 +7,25 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.7.2] - 2020-10-13
+
+### Added
+
+- Now handling deletion of evobackup crontab (replaced by daily.local cron)
+- Customize fstab with noexec and softdep
+- Collectd role
+
+### Changed
+
+- Improve rc.local file configuration
+- Update evocheck to version 6.7.5
+- Hide default daily output mail content (VERBOSESTATUS=0)
+- Add deletion of old log files in the OSPF role
+
+### Fixed
+
+- Fix duplicate evobackup cron if the entry is uncommented in daily.local
+
 ## [6.7.1] - 2020-09-10
 
 ### Added
