@@ -1,6 +1,6 @@
 # yamllint disable rule:line-length
 # Playbook command
-# First use (become_method: su, and var_files uncommented) :
+# First use (become_method: su) :
 # ansible-playbook evolixisation.yml --ask-vault-pass -CDki hosts -l HOSTNAME -u root
 # Subsequent use (become_method: sudo) :
 # ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
@@ -16,8 +16,8 @@
 
   vars_files:
     - vars/main.yml
-  # - vars/secrets.yml
-  # - vars/openbsd-secret.yml
+    - vars/secrets.yml
+    - vars/openbsd-secret.yml
 
   roles:
     - etc-git
