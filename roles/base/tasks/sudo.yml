@@ -8,14 +8,23 @@
   tags:
     - sudo
 
-# dont't break the tab!
 - name: Allow wheel group to run command as root in sudo
   lineinfile:
     dest: /etc/sudoers
     insertafter: '# and set environment variables.'
-    line: '%wheel	ALL=(ALL) SETENV: ALL'
+    line: "%wheel\tALL=(ALL) SETENV: ALL"
     validate: 'visudo -cf %s'
     backup: false
+  tags:
+    - sudo
+
+- name: Delete line with space instead of tab
+  lineinfile:
+    dest: /etc/sudoers
+    line: "%wheel   ALL=(ALL) SETENV: ALL"
+    validate: 'visudo -cf %s'
+    backup: false
+    state: absent
   tags:
     - sudo
 
