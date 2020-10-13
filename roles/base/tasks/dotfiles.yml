@@ -1,7 +1,7 @@
 ---
 - name: Customize root's .profile
-  copy:
-    src: profile
+  template:
+    src: profile.j2
     dest: /root/.profile
   tags:
     - admin
@@ -26,8 +26,8 @@
     - dotfiles
 
 - name: Change default .profile skeleton
-  copy:
-    src: profile
+  template:
+    src: profile.j2
     dest: /etc/skel/.profile
   tags:
     - admin
