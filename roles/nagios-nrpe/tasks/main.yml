@@ -46,7 +46,7 @@
     - {name: 'check_openvpn', force: false}
     - {name: 'check_openvpn.pl', force: true}
     - {name: 'check_ospfd_simple', force: true}
-    - {name: 'check_packetfilter', force: true}
+    - {name: 'check_packetfilter.sh', force: true}
   notify: restart nrpe
 
 - name: Nagios plugins are installed - template
