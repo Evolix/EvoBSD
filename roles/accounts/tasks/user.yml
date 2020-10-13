@@ -22,8 +22,8 @@
   file:
     name: '/home/{{ user.name }}'
     mode: "0700"
-    owner: "{{ user.name }}"
-    group: "{{ user.name }}"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
     state: directory
 
 - name: "SSH public keys for '{{ user.name }}' are present"
