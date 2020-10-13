@@ -1,20 +1,15 @@
 ---
-- name: "Create {{ evolinux_sudo_group }}"
+- name: "Create {{ evobsd_group }} group"
   group:
-    name: "{{ evolinux_sudo_group }}"
-    system: true
-
-- name: "Create {{ evolinux_ssh_group }}"
-  group:
-    name: "{{ evolinux_ssh_group }}"
+    name: "{{ evobsd_group }}"
     system: true
 
 - name: Create user accounts
   include: user.yml
   vars:
     user: "{{ item.value }}"
-  with_dict: "{{ evolinux_users }}"
-  when: evolinux_users != {}
+  with_dict: "{{ evolix_users }}"
+  when: evolix_users != {}
 
 - name: verify AllowGroups directive
   command: "grep -E '^AllowGroups' /etc/ssh/sshd_config"
@@ -40,10 +35,10 @@
     ssh_allowgroups:
       "{{ (grep_allowgroups_ssh.rc == 0) or (grep_allowusers_ssh.rc != 0) }}"
 
-- name: "Add AllowGroups sshd directive with '{{ evolinux_ssh_group }}'"
+- name: "Add AllowGroups sshd directive with '{{ evobsd_group }}'"
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: "\nAllowGroups {{ evolinux_ssh_group }}"
+    line: "\nAllowGroups {{ evobsd_group }}"
     insertafter: 'Subsystem'
     validate: '/usr/sbin/sshd -t -f %s'
   notify: reload sshd
@@ -51,30 +46,33 @@
     - ssh_allowgroups
     - grep_allowgroups_ssh.rc == 1
 
-- name: "Append '{{ evolinux_ssh_group }}' to AllowGroups sshd directive"
+- name: "Append '{{ evobsd_group }}' to AllowGroups sshd directive"
   replace:
     dest: /etc/ssh/sshd_config
-    regexp: '^(AllowGroups ((?!\b{{ evolinux_ssh_group }}\b).)*)$'
-    replace: '\1 {{ evolinux_ssh_group }}'
+    regexp: '^(AllowGroups ((?!\b{{ evobsd_group }}\b).)*)$'
+    replace: '\1 {{ evobsd_group }}'
     validate: '/usr/sbin/sshd -t -f %s'
   notify: reload sshd
   when:
     - ssh_allowgroups
     - grep_allowgroups_ssh.rc == 0
 
-- name: "Append '{{ item.name }}' to AllowUsers sshd directive"
-  replace:
+- name: "Security directives for EvoBSD"
+  blockinfile:
     dest: /etc/ssh/sshd_config
-    regexp: '^(AllowUsers ((?!\b{{ item.name }}\b).)*)$'
-    replace: '\1 {{ item.name }}'
+    marker: "# {mark} EVOBSD PASSWORD RESTRICTIONS"
+    block: |
+      Match Address {{ evolix_trusted_ips | join(',') }}
+          PasswordAuthentication yes
+      Match Group {{ evobsd_group }}
+          PasswordAuthentication no
+    insertafter: EOF
     validate: '/usr/sbin/sshd -t -f %s'
-  with_dict: "{{ evolinux_users }}"
   notify: reload sshd
   when:
-    - not ssh_allowgroups
-    - grep_allowusers_ssh == 1
+    - evolix_trusted_ips != []
 
-- name: disable root login
+- name: "Disable root login"
   replace:
     dest: /etc/ssh/sshd_config
     regexp: '^PermitRootLogin (yes|without-password|prohibit-password)'

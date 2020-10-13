@@ -1,7 +1,7 @@
 # {{ ansible_managed }}
-permit setenv {SSH_AUTH_SOCK SSH_TTY PKG_PATH HOME=/root ENV=/root/.profile} :{{ evolinux_sudo_group }}
+permit setenv {SSH_AUTH_SOCK SSH_TTY PKG_PATH HOME=/root ENV=/root/.profile} :{{ evobsd_group }}
 permit nopass root
-permit setenv {ENV PS1 SSH_AUTH_SOCK SSH_TTY} nopass :{{ evolinux_sudo_group }} as root cmd /usr/share/scripts/evomaintenance.sh
+permit setenv {ENV PS1 SSH_AUTH_SOCK SSH_TTY} nopass :{{ evobsd_group }} as root cmd /usr/share/scripts/evomaintenance.sh
 permit nopass _collectd as root cmd /usr/sbin/bgpctl
 permit nopass _nrpe as root cmd /sbin/bioctl args sd2
 permit nopass _nrpe as root cmd /usr/local/libexec/nagios/check_mailq
