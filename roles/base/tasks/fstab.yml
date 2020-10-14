@@ -11,68 +11,68 @@
 - name: / partition is customized - softdep
   replace:
     dest: /etc/fstab
-    regexp: '([^#]\s+/\s+\S+\s+rw)(.*)'
+    regexp: '([^#]\s+/\s+ffs\s+rw)(.*)'
     replace: '\1,softdep\2'
   when:
     - fstab_content.stdout | regex_search('\s/\s')
-    - not (fstab_content.stdout | regex_search('\s+/\s+\S+\s+rw,softdep'))
+    - not (fstab_content.stdout | regex_search('\s+/\s+ffs\s+rw,softdep'))
   tags:
     - fstab
 
 - name: /var partition is customized - softdep
   replace:
     dest: /etc/fstab
-    regexp: '([^#]\s+/var\s+\S+\s+rw)(.*)'
+    regexp: '([^#]\s+/var\s+ffs\s+rw)(.*)'
     replace: '\1,softdep\2'
   when:
     - fstab_content.stdout | regex_search('\s/var\s')
-    - not (fstab_content.stdout | regex_search('\s+/var\s+\S+\s+rw,softdep'))
+    - not (fstab_content.stdout | regex_search('\s+/var\s+ffs\s+rw,softdep'))
   tags:
     - fstab
 
 - name: /usr partition is customized - softdep
   replace:
     dest: /etc/fstab
-    regexp: '([^#]\s+/usr\s+\S+\s+rw)(.*)'
+    regexp: '([^#]\s+/usr\s+ffs\s+rw)(.*)'
     replace: '\1,softdep\2'
   when:
     - fstab_content.stdout | regex_search('\s/usr\s')
-    - not (fstab_content.stdout | regex_search('\s+/usr\s+\S+\s+rw,softdep'))
+    - not (fstab_content.stdout | regex_search('\s+/usr\s+ffs\s+rw,softdep'))
   tags:
     - fstab
 
 - name: /tmp partition is customized - noexec
   replace:
     dest: /etc/fstab
-    regexp: '([^#]\s+/tmp\s+\S+\s+rw(,softdep)*)(.*)'
+    regexp: '([^#]\s+/tmp\s+ffs\s+rw(,softdep)*)(.*)'
     replace: '\1,noexec\3'
   when:
     - fstab_content.stdout | regex_search('\s/tmp\s')
     - not (fstab_content.stdout
-      | regex_search('\s+/tmp\s+\S+\s+rw,(softdep,)*noexec'))
+      | regex_search('\s+/tmp\s+ffs\s+rw,(softdep,)*noexec'))
   tags:
     - fstab
 
 - name: /tmp partition is customized - softdep
   replace:
     dest: /etc/fstab
-    regexp: '([^#]\s+/tmp\s+\S+\s+rw)(.*)'
+    regexp: '([^#]\s+/tmp\s+ffs\s+rw)(.*)'
     replace: '\1,softdep\2'
   notify: remount /tmp
   when:
     - fstab_content.stdout | regex_search('\s/tmp\s')
     - not (fstab_content.stdout
-      | regex_search('\s+/tmp\s+\S+\s+rw,(noexec,)*softdep'))
+      | regex_search('\s+/tmp\s+ffs\s+rw,(noexec,)*softdep'))
   tags:
     - fstab
 
 - name: /home partition is customized - softdep
   replace:
     dest: /etc/fstab
-    regexp: '([^#]\s+/home\s+\S+\s+rw)(.*)'
+    regexp: '([^#]\s+/home\s+ffs\s+rw)(.*)'
     replace: '\1,softdep\2'
   when:
     - fstab_content.stdout | regex_search('\s/home\s')
-    - not (fstab_content.stdout | regex_search('\s+/home\s+\S+\s+rw,softdep'))
+    - not (fstab_content.stdout | regex_search('\s+/home\s+ffs\s+rw,softdep'))
   tags:
     - fstab
