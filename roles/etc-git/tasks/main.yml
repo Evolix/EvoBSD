@@ -22,7 +22,7 @@
     name: user.email
     repo: /etc
     scope: local
-    value: "root@{{ ansible_fqdn | default('localhost') }}"
+    value: "root@{{ inventory_hostname }}.{{ general_technical_realm }}"
   tags:
     - etc-git
 
