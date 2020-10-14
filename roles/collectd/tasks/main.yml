@@ -95,12 +95,3 @@
   when: collectd_plugin_exec_dns_stats
   tags:
     - collectd
-
-- name: Delete doas configuration for dns_stats.sh execution
-  lineinfile:
-    path: /etc/doas.conf
-    line: 'permit nopass _collectd as root cmd /bin/cat'
-    state: absent
-  when: not collectd_plugin_exec_dns_stats
-  tags:
-    - collectd
