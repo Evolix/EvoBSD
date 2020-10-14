@@ -30,6 +30,14 @@
     dest: /etc/nrpe.d/evolix.cfg
   notify: restart nrpe
 
+- name: Create nrpe plugins dir
+  file:
+    path: /usr/local/libexec/nagios/plugins/
+    state: directory
+    owner: root
+    group: wheel
+    mode: "0755"
+
 - name: Nagios plugins are installed
   copy:
     src: plugins_bsd/{{ item.name }}
