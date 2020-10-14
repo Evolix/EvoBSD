@@ -7,8 +7,18 @@
     group: wheel
     mode: '0755'
 
+- name: Fetch root crontab content
+  command: 'grep "/bin/sh /usr/share/scripts/motd-carp-state.sh" /var/cron/tabs/root'
+  check_mode: false
+  register: root_crontab_content
+  failed_when: false
+  changed_when: false
+
 - name: Cron job for dynamic motd script is installed
   cron:
     name: dynamic motd for CARP
     job: "/bin/sh /usr/share/scripts/motd-carp-state.sh"
     disabled: true
+  when:
+    - not (root_crontab_content.stdout | regex_search('/bin/sh /usr/share/scripts/motd-carp-state.sh'))
+
