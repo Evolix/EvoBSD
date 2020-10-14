@@ -5,3 +5,5 @@
     dest: /etc/pf.conf
     mode: "0600"
     backup: true
+  tags:
+    - pf
