@@ -1,4 +1,13 @@
 ---
+- name: Fetch rc.local content
+  command: "grep -v '^#' /etc/rc.local"
+  check_mode: false
+  register: rclocal_content
+  failed_when: false
+  changed_when: false
+  tags:
+    - misc
+
 - name: Configure rc.local
   lineinfile:
     path: /etc/rc.local
@@ -6,6 +15,8 @@
       'date | mail -s "boot/reboot of $(hostname -s)" {{ general_alert_email }}'
     insertbefore: 'echo'
     create: true
+  when:
+    - not (rclocal_content.stdout | regex_search('date \| mail -s (\"|\')boot/reboot of \$\(hostname -s\)'))
   tags:
     - misc
 
