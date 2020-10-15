@@ -24,7 +24,8 @@
 # evomaintenance_urgency_from: mama.doe@example.com
 # evomaintenance_urgency_tel: "06.00.00.00.00"
 #
-evobsd_group: "evolix"
+# evobsd_ssh_group: "foo-ssh"
+# evobsd_sudo_group: "foo-sudo"
 #
 # evolix_users:
 #  foo:

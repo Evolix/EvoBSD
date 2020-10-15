@@ -1,7 +1,12 @@
 ---
-- name: "Create {{ evobsd_group }} group"
+- name: "Create {{ evobsd_ssh_group }} group"
   group:
-    name: "{{ evobsd_group }}"
+    name: "{{ evobsd_ssh_group }}"
+    system: true
+
+- name: "Create {{ evobsd_sudo_group }} group"
+  group:
+    name: "{{ evobsd_sudo_group }}"
     system: true
 
 - name: Create user accounts
@@ -35,10 +40,10 @@
     ssh_allowgroups:
       "{{ (grep_allowgroups_ssh.rc == 0) or (grep_allowusers_ssh.rc != 0) }}"
 
-- name: "Add AllowGroups sshd directive with '{{ evobsd_group }}'"
+- name: "Add AllowGroups sshd directive with '{{ evobsd_ssh_group }}'"
   lineinfile:
     dest: /etc/ssh/sshd_config
-    line: "\nAllowGroups {{ evobsd_group }}"
+    line: "\nAllowGroups {{ evobsd_ssh_group }}"
     insertafter: 'Subsystem'
     validate: '/usr/sbin/sshd -t -f %s'
   notify: reload sshd
@@ -46,11 +51,11 @@
     - ssh_allowgroups
     - grep_allowgroups_ssh.rc == 1
 
-- name: "Append '{{ evobsd_group }}' to AllowGroups sshd directive"
+- name: "Append '{{ evobsd_ssh_group }}' to AllowGroups sshd directive"
   replace:
     dest: /etc/ssh/sshd_config
-    regexp: '^(AllowGroups ((?!\b{{ evobsd_group }}\b).)*)$'
-    replace: '\1 {{ evobsd_group }}'
+    regexp: '^(AllowGroups ((?!\b{{ evobsd_ssh_group }}\b).)*)$'
+    replace: '\1 {{ evobsd_ssh_group }}'
     validate: '/usr/sbin/sshd -t -f %s'
   notify: reload sshd
   when:
@@ -64,7 +69,7 @@
     block: |
       Match Address {{ evolix_trusted_ips | join(',') }}
           PasswordAuthentication yes
-      Match Group {{ evobsd_group }}
+      Match Group {{ evobsd_ssh_group }}
           PasswordAuthentication no
     insertafter: EOF
     validate: '/usr/sbin/sshd -t -f %s'
