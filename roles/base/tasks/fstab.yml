@@ -19,6 +19,18 @@
   tags:
     - fstab
 
+- name: / partition is customized - noatime
+  replace:
+    dest: /etc/fstab
+    regexp: '([^#]\s+/\s+ffs\s+rw)(\S*)(\s+.*)'
+    replace: '\1\2,noatime\3'
+  notify: remount / noatime
+  when:
+    - fstab_content.stdout | regex_search('\s/\s')
+    - not (fstab_content.stdout | regex_search('\s+/\s+ffs\s+rw\S*noatime'))
+  tags:
+    - fstab
+
 - name: /var partition is customized - softdep
   replace:
     dest: /etc/fstab
@@ -27,6 +39,18 @@
   when:
     - fstab_content.stdout | regex_search('\s/var\s')
     - not (fstab_content.stdout | regex_search('\s+/var\s+ffs\s+rw,softdep'))
+  tags:
+    - fstab
+
+- name: /var partition is customized - noatime
+  replace:
+    dest: /etc/fstab
+    regexp: '([^#]\s+/var\s+ffs\s+rw)(\S*)(\s+.*)'
+    replace: '\1\2,noatime\3'
+  notify: remount /var noatime
+  when:
+    - fstab_content.stdout | regex_search('\s/var\s')
+    - not (fstab_content.stdout | regex_search('\s+/var\s+ffs\s+rw\S*noatime'))
   tags:
     - fstab
 
@@ -41,11 +65,24 @@
   tags:
     - fstab
 
+- name: /usr partition is customized - noatime
+  replace:
+    dest: /etc/fstab
+    regexp: '([^#]\s+/usr\s+ffs\s+rw)(\S*)(\s+.*)'
+    replace: '\1\2,noatime\3'
+  notify: remount /usr noatime
+  when:
+    - fstab_content.stdout | regex_search('\s/usr\s')
+    - not (fstab_content.stdout | regex_search('\s+/usr\s+ffs\s+rw\S*noatime'))
+  tags:
+    - fstab
+
 - name: /tmp partition is customized - noexec
   replace:
     dest: /etc/fstab
     regexp: '([^#]\s+/tmp\s+ffs\s+rw(,softdep)*)(.*)'
     replace: '\1,noexec\3'
+  notify: remount /tmp noexec
   when:
     - fstab_content.stdout | regex_search('\s/tmp\s')
     - not (fstab_content.stdout
@@ -58,11 +95,22 @@
     dest: /etc/fstab
     regexp: '([^#]\s+/tmp\s+ffs\s+rw)(.*)'
     replace: '\1,softdep\2'
-  notify: remount /tmp
   when:
     - fstab_content.stdout | regex_search('\s/tmp\s')
     - not (fstab_content.stdout
       | regex_search('\s+/tmp\s+ffs\s+rw,(noexec,)*softdep'))
+  tags:
+    - fstab
+
+- name: /tmp partition is customized - noatime
+  replace:
+    dest: /etc/fstab
+    regexp: '([^#]\s+/tmp\s+ffs\s+rw)(\S*)(\s+.*)'
+    replace: '\1\2,noatime\3'
+  notify: remount /tmp noatime
+  when:
+    - fstab_content.stdout | regex_search('\s/tmp\s')
+    - not (fstab_content.stdout | regex_search('\s+/tmp\s+ffs\s+rw\S*noatime'))
   tags:
     - fstab
 
@@ -74,5 +122,17 @@
   when:
     - fstab_content.stdout | regex_search('\s/home\s')
     - not (fstab_content.stdout | regex_search('\s+/home\s+ffs\s+rw,softdep'))
+  tags:
+    - fstab
+
+- name: /home partition is customized - noatime
+  replace:
+    dest: /etc/fstab
+    regexp: '([^#]\s+/home\s+ffs\s+rw)(\S*)(\s+.*)'
+    replace: '\1\2,noatime\3'
+  notify: remount /home noatime
+  when:
+    - fstab_content.stdout | regex_search('\s/home\s')
+    - not (fstab_content.stdout | regex_search('\s+/home\s+ffs\s+rw\S*noatime'))
   tags:
     - fstab
