@@ -37,10 +37,13 @@
   tags:
     - evocheck
 
-- name: Add evocheck cron
+- name: Add evocheck cron next_part
   lineinfile:
     path: /etc/daily.local
     line: 'next_part "Evocheck output:"'
     insertbefore: 'sh /usr/share/scripts/evocheck.sh --verbose --cron'
+    owner: root
+    mode: "0644"
+    create: true
   tags:
     - evocheck
