@@ -94,6 +94,9 @@
     line: 'next_part "Checking /etc git status:"'
     insertbefore:
       '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
+    owner: root
+    mode: "0644"
+    create: true
   when: etc_git_monitor_status
   tags:
     - etc-git
