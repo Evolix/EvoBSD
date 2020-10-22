@@ -3,7 +3,7 @@
 # EvoCheck
 # Script to verify compliance of an OpenBSD server powered by Evolix
 
-readonly VERSION="6.7.6"
+readonly VERSION="6.7.7"
 
 # Disable LANG*
 
@@ -121,7 +121,7 @@ check_raidok(){
     egrep 'sd.*RAID' /var/run/dmesg.boot 1> /dev/null 2>&1
     RESULT=$?
     if [ $RESULT -eq 0 ]; then
-        raid_device=$(egrep 'sd.*RAID' /var/run/dmesg.boot | awk '{ print $1 }')
+        raid_device=$(egrep 'sd.*RAID' /var/run/dmesg.boot | awk '{ print $1 }' | tail -1)
         raid_status=$(bioctl $raid_device | grep softraid | awk '{ print $3 }')
         if [ $raid_status != "Online" ]; then
             failed "IS_RAIDOK" "One of the RAID disk members is faulty. Use bioctl -h $raid_device for more informations"
@@ -138,7 +138,7 @@ check_evobackup(){
 }
 
 check_uptodate(){
-    if [ -f $(command -v syspatch) ]; then
+    if [ $(command -v syspatch) ]; then
         if syspatch -c | egrep "." 1> /dev/null 2>&1; then
             failed "IS_UPTODATE" "Security update available! Update with syspatch(8)!"
         fi
@@ -347,6 +347,12 @@ check_ntp(){
     fi
 }
 
+check_openvpncronlog(){
+    if /etc/rc.d/openvpn check > /dev/null 2>&1; then
+        grep -q 'cp /var/log/openvpn.log /var/log/openvpn.log.$(date +\\%F) && echo "$(date +\\%F. .\\%R) - logfile turned over via cron" > /var/log/openvpn.log && gzip /var/log/openvpn.log.$(date +\\%F) && find /var/log/ -type f -name "openvpn.log.\*" -mtime .365 -exec rm {} \\+' /var/cron/tabs/root || failed "IS_OPENVPNCRONLOG" "OpenVPN is enabled but there is no log rotation in the root crontab, or the cron is not up to date (OpenVPN log rotation in newsyslog is not used because a restart is needed)."
+    fi
+}
+
 
 main() {
     # Default return code : 0 = no error
@@ -387,6 +393,7 @@ main() {
     test "${IS_SYNC:=1}" = 1 && check_sync
     test "${IS_DEFAULTROUTE:=1}" = 1 && check_defaultroute
     test "${IS_NTP:=1}" = 1 && check_ntp
+    test "${IS_OPENVPNCRONLOG:=1}" = 1 && check_openvpncronlog
 
     exit ${RC}
 }
