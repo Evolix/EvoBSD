@@ -36,6 +36,7 @@
     block: |
       Cmnd_Alias MAINT = /usr/share/scripts/evomaintenance.sh
       %wheel ALL=NOPASSWD: MAINT
+      %evolinux-sudo ALL=(ALL) SETENV: ALL
     validate: 'visudo -cf %s'
     backup: false
   tags:
