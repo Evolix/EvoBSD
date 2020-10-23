@@ -7,6 +7,29 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.8.0] - 2020-10-23
+
+### Added
+
+- Add a PF tag to be able to skip that part when rerunning EvoBSD
+- Add a doas authorization for NRPE check_ipsecctl_critiques
+
+### Changed
+
+- The task mail.yml replace the former boot/reboot message only if it is untouched
+- Replace the variable used to set the email address in etc-git role - now using inventory_hostname
+- Not checking syspatch when OpenBSD <= 6.1
+- Amend fstab file adding noatime option to each entrie
+- Import evocheck v.6.7.7
+- Comment NRPE checks that cannot be used as is
+
+### Fixed
+
+- Add the creation of the NRPE plugins directory in nagios-nrpe role
+- Add collectd doas rights in the base role to avoid broking anything if EvoBSD is rerun without the collectd role included
+- Do not add the motd cron if the same line is already there but uncommented
+- Amend fstab entries only when the filesystem is ffs
+
 ## [6.7.2] - 2020-10-13
 
 ### Added
