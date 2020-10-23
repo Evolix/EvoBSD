@@ -8,7 +8,8 @@
     mode: '0755'
 
 - name: Fetch root crontab content
-  command: 'grep "/bin/sh /usr/share/scripts/motd-carp-state.sh" /var/cron/tabs/root'
+  command: >
+    'grep "/bin/sh /usr/share/scripts/motd-carp-state.sh" /var/cron/tabs/root'
   check_mode: false
   register: root_crontab_content
   failed_when: false
@@ -20,5 +21,5 @@
     job: "/bin/sh /usr/share/scripts/motd-carp-state.sh"
     disabled: true
   when:
-    - not (root_crontab_content.stdout | regex_search('/bin/sh /usr/share/scripts/motd-carp-state.sh'))
-
+    - not (root_crontab_content.stdout
+      | regex_search('/bin/sh /usr/share/scripts/motd-carp-state.sh'))

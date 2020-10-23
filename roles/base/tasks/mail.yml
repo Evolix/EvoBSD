@@ -16,7 +16,8 @@
     insertbefore: 'echo'
     create: true
   when:
-    - not (rclocal_content.stdout | regex_search('date \| mail -s (\"|\')boot/reboot of \$\(hostname -s\)'))
+    - not (rclocal_content.stdout
+      | regex_search('date \| mail -s (\"|\')boot/reboot of \$\(hostname -s\)'))
   tags:
     - misc
 
