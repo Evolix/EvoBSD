@@ -5,20 +5,6 @@
     name: "{{ user.name }}"
     gid: "{{ user.uid }}"
 
-- name: "User '{{ user.name }}' is present with legacy hash"
-  user:
-    state: present
-    name: '{{ user.name }}'
-    uid: '{{ user.uid }}'
-    password: "{{ user.password_hash_openbsd_legacy }}"
-    group: "{{ user.name }}"
-    groups: wheel
-    shell: /bin/ksh
-    append: true
-  when: ansible_distribution_version is version_compare("5.7",'<')
-  tags:
-    - admin
-
 - name: "User '{{ user.name }}' is present"
   user:
     state: present
@@ -29,7 +15,6 @@
     groups: wheel
     shell: /bin/ksh
     append: true
-  when: ansible_distribution_version is version_compare("5.7",'>=')
   tags:
     - admin
 
