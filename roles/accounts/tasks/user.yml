@@ -1,15 +1,30 @@
 ---
+- name: "Group '{{ user.name }}' is present"
+  group:
+    state: present
+    name: "{{ user.name }}"
+    gid: "{{ user.uid }}"
+
 - name: "User '{{ user.name }}' is present"
   user:
     state: present
     name: '{{ user.name }}'
     uid: '{{ user.uid }}'
     password: '{{ user.password_hash_openbsd }}'
+    group: "{{ user.name }}"
     groups: wheel
     shell: /bin/ksh
-    append: yes
+    append: true
   tags:
     - admin
+
+- name: "Home directory for '{{ user.name }}' is only accesible by owner"
+  file:
+    name: '/home/{{ user.name }}'
+    mode: "0700"
+    owner: "{{ user.name }}"
+    group: "{{ user.name }}"
+    state: directory
 
 - name: "SSH public keys for '{{ user.name }}' are present"
   authorized_key:
@@ -20,5 +35,21 @@
   loop_control:
     loop_var: ssk_key
   when: user.ssh_keys is defined
+  tags:
+    - admin
+
+- name: "Add {{ user.name }} to {{ evobsd_ssh_group }} group"
+  user:
+    name: "{{ user.name }}"
+    groups: "{{ evobsd_ssh_group }}"
+    append: true
+  tags:
+    - admin
+
+- name: "Add {{ user.name }} to {{ evobsd_sudo_group }} group"
+  user:
+    name: "{{ user.name }}"
+    groups: "{{ evobsd_sudo_group }}"
+    append: true
   tags:
     - admin

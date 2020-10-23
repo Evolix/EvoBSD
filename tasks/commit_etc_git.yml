@@ -3,19 +3,25 @@
   command: git status --porcelain
   args:
     chdir: /etc
-  changed_when: False
+  changed_when: false
   register: git_status
   when: not ansible_check_mode
-  ignore_errors: yes
+  ignore_errors: true
   tags:
-  - commit-etc
-
+    - commit-etc
+# yamllint disable rule:line-length
 - name: /etc modifications are committed
-  shell: "git add -A . && git commit -m \"{{ commit_message | default('Ansible run') }}\" --author=\"{{ ansible_env.SUDO_USER | default('Root') }} <{{ ansible_env.SUDO_USER | default('Root') }}@{{ general_technical_realm }}>\""
+  shell: >
+    git add -A .
+    && git commit
+    -m "{{ commit_message | default('Ansible run') }}"
+    --author="{{ ansible_env.SUDO_USER | default('Root') }}
+    <{{ ansible_env.SUDO_USER | default('Root') }}@{{ general_technical_realm }}>"
   args:
     chdir: /etc
   register: etc_commit_end_evolinux
   when: not ansible_check_mode and git_status.stdout != ""
-  ignore_errors: yes
+  ignore_errors: true
   tags:
-  - commit-etc
+    - commit-etc
+# yamllint enable rule:line-length

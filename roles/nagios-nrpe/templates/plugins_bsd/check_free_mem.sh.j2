@@ -64,7 +64,7 @@ __EOT
 # Total memory size (in MB)
 tot_mem=$(( `/sbin/sysctl -n hw.physmem` / BYTES_IN_MB))
 # Free memory size (in MB)
-{% if ansible_distribution_version | version_compare("6.2",'<') %}
+{% if ansible_distribution_version is version_compare("6.2",'<') %}
 free_mem=$(( `/usr/bin/vmstat | /usr/bin/tail -1 | /usr/bin/awk '{ print $5 }'` / KB_IN_MB ))
 {% else %}
 free_mem=$(/usr/bin/vmstat | /usr/bin/tail -1 | /usr/bin/awk '{ print $4 }' | tr -d 'M')

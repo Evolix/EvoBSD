@@ -12,7 +12,7 @@
   args:
     chdir: /etc
     creates: /etc/.git/
-    warn: no
+    warn: false
   register: git_init
   tags:
     - etc-git
@@ -22,7 +22,7 @@
     name: user.email
     repo: /etc
     scope: local
-    value: "root@{{ ansible_fqdn | default('localhost') }}"
+    value: "root@{{ inventory_hostname }}.{{ general_technical_realm }}"
   tags:
     - etc-git
 
@@ -48,11 +48,11 @@
   command: "git log"
   args:
     chdir: /etc
-    warn: no
-  changed_when: False
-  failed_when: False
+    warn: false
+  changed_when: false
+  failed_when: false
   register: git_log
-  check_mode: no
+  check_mode: false
   tags:
     - etc-git
 
@@ -60,7 +60,7 @@
   shell: "git add -A . && git commit -m \"Initial commit via Ansible\""
   args:
     chdir: /etc
-    warn: no
+    warn: false
   register: git_commit
   when: git_log.rc != 0 or (git_init is defined and git_init.changed)
   tags:
@@ -72,17 +72,31 @@
     line: '/usr/local/bin/git --git-dir /etc/.git gc --quiet'
     owner: root
     mode: "0644"
-    create: yes
+    create: true
   tags:
     - etc-git
 
 - name: cron job for /etc/.git status is installed
   lineinfile:
     path: /etc/daily.local
-    line: '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
+    line:
+      '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
     owner: root
     mode: "0644"
-    create: yes
+    create: true
+  when: etc_git_monitor_status
+  tags:
+    - etc-git
+
+- name: cron job for /etc/.git status is installed - next_part
+  lineinfile:
+    path: /etc/daily.local
+    line: 'next_part "Checking /etc git status:"'
+    insertbefore:
+      '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
+    owner: root
+    mode: "0644"
+    create: true
   when: etc_git_monitor_status
   tags:
     - etc-git
@@ -90,10 +104,13 @@
 - name: cron job for /etc/.git status is removed
   lineinfile:
     path: /etc/daily.local
-    line: '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
+    line: "{{ item }}"
     owner: root
     mode: "0644"
     state: absent
+  with_items:
+    - 'next_part "Checking /etc git status:"'
+    - '/usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short'
   when: not etc_git_monitor_status
   tags:
     - etc-git
@@ -102,7 +119,13 @@
   cron:
     name: git status
     minute: 42
-    job: "who > /dev/null || /usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short"
+    job: >
+      who
+      > /dev/null
+      || /usr/local/bin/git
+      --git-dir=/etc/.git
+      --work-tree=/etc
+      status --short
   when: etc_git_monitor_status
   tags:
     - etc-git
@@ -111,7 +134,13 @@
   cron:
     name: git status
     minute: 42
-    job: "who > /dev/null || /usr/local/bin/git --git-dir=/etc/.git --work-tree=/etc status --short"
+    job: >
+      who
+      > /dev/null
+      || /usr/local/bin/git
+      --git-dir=/etc/.git
+      --work-tree=/etc
+      status --short
     state: absent
   when: not etc_git_monitor_status
   tags:

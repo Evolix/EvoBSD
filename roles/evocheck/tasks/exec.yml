@@ -1,0 +1,15 @@
+---
+- name: run evocheck
+  command: "{{ evocheck_bin_dir }}/evocheck.sh"
+  register: evocheck_run
+  changed_when: false
+  failed_when: false
+  check_mode: false
+  tags:
+  - evocheck-exec
+
+- debug:
+    var: evocheck_run.stdout_lines
+  when: evocheck_run.stdout != ""
+  tags:
+    - evocheck-exec

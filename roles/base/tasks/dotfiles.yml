@@ -1,7 +1,7 @@
 ---
 - name: Customize root's .profile
-  copy:
-    src: profile
+  template:
+    src: profile.j2
     dest: /root/.profile
   tags:
     - admin
@@ -26,8 +26,8 @@
     - dotfiles
 
 - name: Change default .profile skeleton
-  copy:
-    src: profile
+  template:
+    src: profile.j2
     dest: /etc/skel/.profile
   tags:
     - admin
@@ -39,10 +39,10 @@
     dest: /etc/skel/.profile
     insertafter: EOF
     line: 'trap "doas /usr/share/scripts/evomaintenance.sh" 0'
-    create: yes
+    create: true
   tags:
-     - admin
-     - dotfiles
+    - admin
+    - dotfiles
 
 - name: Add vim configuration to dotfiles for new users
   copy:

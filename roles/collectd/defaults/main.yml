@@ -1,0 +1,31 @@
+---
+
+# destination server
+
+collectd_server: "127.0.0.1"
+
+# execution interval
+
+collectd_interval: "300"
+
+# exec plugin
+
+collectd_plugin_exec_interval: "{{ collectd_interval }}"
+collectd_plugin_exec_ifq_drops: false
+collectd_plugin_exec_dns_stats: false  # Based on unbound
+collectd_plugin_exec_dns_stats_interval: "{{ collectd_interval }}"
+
+# others plugins
+
+collectd_plugin_cpu: true
+collectd_plugin_df: true
+collectd_plugin_disk: true
+collectd_plugin_interface: true
+collectd_plugin_load: true
+collectd_plugin_memory: true
+collectd_plugin_pf: true
+collectd_plugin_processes: true
+collectd_plugin_swap: true
+collectd_plugin_tcpconns: true
+collectd_plugin_uptime: true
+collectd_plugin_users: true

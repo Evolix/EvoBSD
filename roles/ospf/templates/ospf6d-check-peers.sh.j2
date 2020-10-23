@@ -1,0 +1,126 @@
+#!/bin/ksh
+
+# Script writen by Daniel Jakots for BGP, adapted by Jeremy Dubois for OSPF
+
+# First we go through the list of neighbor and we write all the peer and
+# their status in "${_TMPDIR}"/ospf6-status.
+
+# Then we monitor if this file has changed between now and the previous run.
+
+# If it did, we send a mail with the states of the different sessions.
+
+set -u
+
+PATH=$HOME/bin:/bin:/sbin:/usr/bin:/usr/sbin:/usr/local/bin:/usr/local/sbin:.
+
+_MAILTO="{{ ospf_mailto }}"
+_TMPDIR=/tmp/check-ospf6
+_PIDFILE="${_TMPDIR}"/ospf6d-check-peers.pid
+
+
+if [ -e /etc/realname ]; then
+    _REALNAME=$(cat /etc/realname)
+    _HOSTNAME=$(hostname -s)
+else
+    _HOSTNAME=$(hostname)
+fi
+
+mkdir -p "${_TMPDIR}"
+
+# Don't try to run if it's already running
+if [ -e "${_PIDFILE}" ]; then
+    echo "$(date)" >> "${_TMPDIR}"/log
+    exit 1
+else
+    echo $$ >> "${_PIDFILE}"
+fi
+
+# Create an history
+if [[ -f "${_TMPDIR}"/ospf6-status ]] ; then
+    mv "${_TMPDIR}"/ospf6-status "${_TMPDIR}"/ospf6-status.old
+else
+    touch "${_TMPDIR}"/ospf6-status
+    touch "${_TMPDIR}"/ospf6-status.old
+fi
+
+# List peers and loops on them to list them and their OSPF6 state
+ospf6ctl show neighbor | grep -v "^$" | grep -v "Uptime" | awk {'print $1'} > "${_TMPDIR}"/peers-list
+
+while read _PEER
+do
+    _STATUS=$(/usr/sbin/ospf6ctl show neighbor | grep "${_PEER} " | awk {'print $3'})
+    echo -n "${_PEER}" >> "${_TMPDIR}"/ospf6-status
+    echo -n " " >> "${_TMPDIR}"/ospf6-status
+    if ([[ "${_STATUS}" = "FULL/BCKUP" ]] || [[ "${_STATUS}" = "FULL/DR" ]] || [[ "${_STATUS}" = "2-WAY/OTHER" ]] || [[ "${_STATUS}" = "FULL/OTHER" ]]) ; then
+       _STATUS="UP"
+    else
+       _STATUS="DOWN"
+    fi
+    echo "${_STATUS}" >> "${_TMPDIR}"/ospf6-status
+
+done <"${_TMPDIR}"/peers-list
+
+# Check for difference with previous run
+different=$(diff -q "${_TMPDIR}"/ospf6-status.old "${_TMPDIR}"/ospf6-status)
+
+if ! [[ -n "${different}" ]] ; then
+    rm -f "${_PIDFILE}"
+    exit 0
+fi
+
+# It changed so we're going to send a mail
+
+_TMPMAILDIR="${_TMPDIR}"/mail
+mkdir -p "${_TMPMAILDIR}"
+
+# go through sessions and list them depending on their OSPF6 state
+echo "*** Session(s) OK ***\n" >> "${_TMPMAILDIR}"/bodyok
+while read _LINE
+do
+    # _LINE is session + status
+    _STATUS=$(echo "${_LINE}" | awk {'print $2'})
+    _SESSION=$(echo "${_LINE}" | awk {'print $1'})
+    if [[ "${_STATUS}" = "UP" ]] ; then
+        ospf6ctl show neighbor | grep "${_SESSION} " {{ ospf_sed_command }} >> "${_TMPMAILDIR}"/bodyok
+    else
+        ospf6ctl show neighbor | grep "${_SESSION} " {{ ospf_sed_command }} >> "${_TMPMAILDIR}"/bodynok
+    fi
+done <"${_TMPDIR}"/ospf6-status
+
+# create the mail body
+
+echo "Dear NOC,\n\nThe state of one or more OSPF6 session(s) has changed:\n" > "${_TMPMAILDIR}"/header
+cat "${_TMPMAILDIR}"/header "${_TMPMAILDIR}"/bodyok > "${_TMPMAILDIR}"/body
+
+_STATE="OK"
+if [[ -f "${_TMPMAILDIR}"/bodynok ]] ; then
+    _STATE="NOT OK"
+    echo "\n*** Session(s) on error ***\n" >> "${_TMPMAILDIR}"/body
+    cat "${_TMPMAILDIR}"/bodynok >> "${_TMPMAILDIR}"/body
+fi
+
+# Add some infos
+echo "\n\n*** Known OSPF routes ***\n" >>  "${_TMPMAILDIR}"/body
+ospf6ctl show fib ospf >>  "${_TMPMAILDIR}"/body
+
+echo "\n\n*** Network used memory ***\n" >>  "${_TMPMAILDIR}"/body
+netstat -m >>  "${_TMPMAILDIR}"/body
+
+echo "\n\n*** Server load ***\n" >>  "${_TMPMAILDIR}"/body
+w >>  "${_TMPMAILDIR}"/body
+
+echo "\n\n*** Processes ***\n" >>  "${_TMPMAILDIR}"/body
+top >>  "${_TMPMAILDIR}"/body
+
+# Send the mail whether we have a realname or not
+if [ -n "${_REALNAME}" ]; then
+    cat "${_TMPMAILDIR}"/body | mail -s "[OSPF6] ${_REALNAME} (${_HOSTNAME}) - State change - ${_STATE}" "${_MAILTO}"
+else
+    cat "${_TMPMAILDIR}"/body | mail -s "[OSPF6] ${_HOSTNAME} - State change - ${_STATE}" "${_MAILTO}"
+fi
+
+# cleaning
+if [[ -d  "${_TMPMAILDIR}" ]] ; then
+    rm -rf  "${_TMPMAILDIR}"
+fi
+rm -f "${_PIDFILE}"

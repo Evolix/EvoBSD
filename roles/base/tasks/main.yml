@@ -7,3 +7,6 @@
 - include: mail.yml
 - include: sudo.yml
 - include: evobackup.yml
+- include: newsyslog.yml
+- include: cron.yml
+- include: fstab.yml

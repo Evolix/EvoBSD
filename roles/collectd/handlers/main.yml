@@ -1,0 +1,10 @@
+---
+- name: restart collectd
+  service:
+    name: collectd
+    state: restarted
+
+- name: reload unbound
+  service:
+    name: unbound
+    state: reloaded

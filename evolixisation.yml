@@ -1,5 +1,9 @@
+# yamllint disable rule:line-length
 # Playbook command
-# ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
+# First use (become_method: su) :
+# ansible-playbook evolixisation.yml --ask-vault-pass -CDki hosts -u root -l HOSTNAME
+# Subsequent use (become_method: sudo) :
+# ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts --skip-tags pf -l HOSTNAME
 
 ---
 - name: Evolixisation of an OpenBSD system
@@ -7,11 +11,13 @@
   become: true
   become_user: root
   become_method: sudo
+  # become_method: su
 
 
   vars_files:
     - vars/main.yml
-#    - vars/secrets.yml
+    - vars/secrets.yml
+    - vars/openbsd-secret.yml
 
   roles:
     - etc-git
@@ -20,14 +26,20 @@
     - pf
     - accounts
     - nagios-nrpe
+    - evocheck
     - post-install
+    # - openvpn
+    # - ospf
+    # - bgp
+    # - { role: collectd, collectd_server: "127.0.0.1" }
 
   post_tasks:
     - include: "tasks/commit_etc_git.yml"
       vars:
         commit_message: "Ansible - Evolixisation"
+    - include_role:
+        name: evocheck
+        tasks_from: exec.yml
 
-  environment:
-    PKG_PATH: "http://ftp.openbsd.org/pub/OpenBSD/{{ ansible_distribution_version }}/packages/{{ ansible_architecture }}/"
-
-# vim:ft=ansible
+#  environment:
+# PKG_PATH: "http://ftp.openbsd.org/pub/OpenBSD/{{ ansible_distribution_version }}/packages/{{ ansible_architecture }}/"

@@ -1,0 +1,75 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
+and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
+
+## [Unreleased]
+
+## [6.8.0] - 2020-10-23
+
+### Added
+
+- Add a PF tag to be able to skip that part when rerunning EvoBSD
+- Add a doas authorization for NRPE check_ipsecctl_critiques
+
+### Changed
+
+- The task mail.yml replace the former boot/reboot message only if it is untouched
+- Replace the variable used to set the email address in etc-git role - now using inventory_hostname
+- Not checking syspatch when OpenBSD <= 6.1
+- Amend fstab file adding noatime option to each entrie
+- Import evocheck v.6.7.7
+- Comment NRPE checks that cannot be used as is
+
+### Fixed
+
+- Add the creation of the NRPE plugins directory in nagios-nrpe role
+- Add collectd doas rights in the base role to avoid broking anything if EvoBSD is rerun without the collectd role included
+- Do not add the motd cron if the same line is already there but uncommented
+- Amend fstab entries only when the filesystem is ffs
+
+## [6.7.2] - 2020-10-13
+
+### Added
+
+- Now handling deletion of evobackup crontab (replaced by daily.local cron)
+- Customize fstab with noexec and softdep
+- Collectd role
+
+### Changed
+
+- Improve rc.local file configuration
+- Update evocheck to version 6.7.5
+- Hide default daily output mail content (VERBOSESTATUS=0)
+- Add deletion of old log files in the OSPF role
+
+### Fixed
+
+- Fix duplicate evobackup cron if the entry is uncommented in daily.local
+
+## [6.7.1] - 2020-09-10
+
+### Added
+
+- Add completions functions in root's profile dotfile
+- Add check_connections_state.sh NRPE plugin
+- Add an evocheck role
+- Add stricter ssh and doas access
+- Add an openvpn role
+- Add an OpenBGPd NRPE plugin
+- Add ospf and bgp roles
+- Add an unbound NRPE check since it is part of the base system
+- Add a motd-carp-state.sh script that checks the carp state and generates the /etc/motd file
+
+### Changed
+
+- Disable sndiod since it is not required on serveurs
+- Replace sudo with doas for script executions
+- Update evomaintenance version to 0.6.3
+- Disable mouse function in vim configuration   
+- Drop openup since syspatch can apply stable patches now
+- Update evobackup script
+- Rewrite newsyslog configuration
+- Drop postgresql-client package since evomaintenance use an API now

@@ -1,0 +1,49 @@
+---
+- name: Scripts dir is present
+  file:
+    path: "{{ evocheck_bin_dir }}"
+    state: directory
+    owner: root
+    group: wheel
+    mode: "0700"
+  tags:
+    - evocheck
+
+- name: Copy evocheck.sh
+  copy:
+    src: evocheck.sh
+    dest: "{{ evocheck_bin_dir }}/evocheck.sh"
+    mode: "0700"
+    owner: root
+    force: true
+  tags:
+    - evocheck
+
+- name: Copy evocheck.cf
+  copy:
+    src: evocheck.cf
+    dest: /etc/evocheck.cf
+    force: false
+  tags:
+    - evocheck
+
+- name: Add evocheck cron
+  lineinfile:
+    path: /etc/daily.local
+    line: 'sh /usr/share/scripts/evocheck.sh --verbose --cron'
+    owner: root
+    mode: "0644"
+    create: true
+  tags:
+    - evocheck
+
+- name: Add evocheck cron next_part
+  lineinfile:
+    path: /etc/daily.local
+    line: 'next_part "Evocheck output:"'
+    insertbefore: 'sh /usr/share/scripts/evocheck.sh --verbose --cron'
+    owner: root
+    mode: "0644"
+    create: true
+  tags:
+    - evocheck

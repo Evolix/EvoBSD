@@ -1,3 +1,33 @@
 ---
 - name: newaliases
   shell: smtpctl update table aliases
+
+- name: remount / noatime
+  command: mount -u -o noatime /
+  args:
+    warn: false
+
+- name: remount /var noatime
+  command: mount -u -o noatime /var
+  args:
+    warn: false
+
+- name: remount /usr noatime
+  command: mount -u -o noatime /usr
+  args:
+    warn: false
+
+- name: remount /tmp noexec
+  command: mount -u -o noexec /tmp
+  args:
+    warn: false
+
+- name: remount /tmp noatime
+  command: mount -u -o noatime /tmp
+  args:
+    warn: false
+
+- name: remount /home noatime
+  command: mount -u -o noatime /home
+  args:
+    warn: false

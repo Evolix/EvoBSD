@@ -5,9 +5,10 @@ dnsPTRrecord=$(hostname)
 HardwareMark=$(sysctl hw.vendor| sed 's#hw.vendor=##')
 HardwareModel=$(sysctl hw.product| sed 's#hw.product=##')
 computerIP=$(ifconfig egress | grep inet | awk -v OFS="\n" '{ print $2, $NF }'| head -1)
-computerOS=OpenBSD
 computerKernel=$(sysctl kern.osrelease | sed 's#kern.osrelease=##')
-HardwareSerial=$(sysctl hw.serialno| sed 's#hw.serialno=##')
+computerOS="OpenBSD $computerKernel"
+HardwareSerial=$(sysctl hw.serialno 2>/dev/null | sed 's#hw.serialno=##')
+if [ -z $HardwareSerial ]; then sysctl hw | grep -qi qemu && HardwareSerial="Not Specified"; fi
 clientNumber="XXX"
 cpuMark=$(sysctl hw.model| sed 's#hw.model=##')
 cpuModel=$(sysctl hw.model| sed 's#hw.model=##')
@@ -62,8 +63,8 @@ HardwareSize: $cpuFreq
 HardwareType: CPU
 HardwareModel: $cpuModel
 
-dn: HardwareName=ram0,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
-HardwareName: ram0
+dn: HardwareName=mem,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
+HardwareName: mem
 objectClass: EvoHardware
 HardwareSize: $mem
 HardwareType: mem
@@ -119,7 +120,7 @@ objectClass: EvoService
 ipServicePort: 22
 ServiceName: openssh
 ServiceType: ssh
-ServiceVersion: OpenSSH 6.7
+ServiceVersion: OpenSSH 8.3
 
 dn: ServiceName=opensmtpd,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
 ipServiceProtocol: tcp
@@ -128,13 +129,20 @@ objectClass: EvoService
 ServiceName: opensmtpd
 ipServicePort: 25
 ServiceType: smtp
-ServiceVersion: OpenSMTPD 5.4.3
+ServiceVersion: OpenSMTPD 6.7.1p1
 
 dn: ServiceName=ntp,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
 NagiosEnabled: TRUE
 objectClass: EvoService
 ServiceName: ntp
 ServiceType: ntp
-ServiceVersion: OpenNTPd 4.6
+ServiceVersion: OpenNTPd 6.2p3
+
+dn: ServiceName=packetfilter,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
+NagiosEnabled: TRUE
+objectClass: EvoService
+ServiceName: packetfilter
+ServiceType: firewall
+ServiceVersion: packetfilter
 
 EOT

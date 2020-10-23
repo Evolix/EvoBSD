@@ -6,7 +6,16 @@
     owner: root
     group: wheel
     mode: "0755"
-    force: no
+    force: false
+  tags:
+    - evobackup
+
+- name: Fetch daily.local content
+  command: 'grep "sh /usr/share/scripts/zzz_evobackup" /etc/daily.local'
+  check_mode: false
+  register: daily_local_content
+  failed_when: false
+  changed_when: false
   tags:
     - evobackup
 
@@ -16,5 +25,18 @@
     line: '#sh /usr/share/scripts/zzz_evobackup'
     owner: root
     mode: "0644"
+    create: true
+  when:
+    - not (daily_local_content.stdout
+      | regex_search('sh /usr/share/scripts/zzz_evobackup'))
+  tags:
+    - evobackup
+
+- name: Delete evobackup root crontab replaced by daily.local cron
+  lineinfile:
+    path: /var/cron/tabs/root
+    regexp: '/usr/share/scripts/zzz_evobackup'
+    validate: /usr/bin/crontab %s
+    state: absent
   tags:
     - evobackup

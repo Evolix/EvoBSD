@@ -2,3 +2,4 @@
 # tasks files
 - include: ldif.yml
 - include: update.yml
+- include: motd.yml
