@@ -1,4 +1,4 @@
-# EvoBSD 6.7.2
+# EvoBSD 6.8.0
 
 EvoBSD is an ansible project used for customising OpenBSD hosts
 used by Evolix.
@@ -17,16 +17,16 @@ ansible-playbook prerequisite.yml -CDi hosts -l HOSTNAME
 
 2.  Run it
 
-First use (become_method: su, and var_files uncommented) :
+First use (become_method: su) :
 
 ```
-ansible-playbook evolixisation.yml --ask-vault-pass -CDki hosts -l HOSTNAME -u root
+ansible-playbook evolixisation.yml --ask-vault-pass -CDki hosts -u root -l HOSTNAME
 ```
 
 Subsequent use (become_method: sudo) :
 
 ```
-ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts -l HOSTNAME
+ansible-playbook evolixisation.yml --ask-vault-pass -CDKi hosts --skip-tags pf -l HOSTNAME
 ```
 
 ### Testing
@@ -36,7 +36,7 @@ Changes can be tested by using [Packer](https://www.packer.io/) and
 
 *   This process depends on the [Go](https://golang.org/) programming language.
 
-## Packages
+**Packages**
 
 Needing a Golang eco system and some basics
 
@@ -50,7 +50,7 @@ pkg_add go-- packer-- git--
 git clone https://github.com/double-p/packer-builder-openbsd-vmm.git
 ````
 
-## builds
+**builds**
 
 Set ````GOPATH```` (default: ~/go), if the 1.4GB dependencies wont fit.
 
