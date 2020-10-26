@@ -9,7 +9,7 @@
 
 - name: Fetch root crontab content
   command: >
-    'grep "/bin/sh /usr/share/scripts/motd-carp-state.sh" /var/cron/tabs/root'
+    grep "/bin/sh /usr/share/scripts/motd-carp-state.sh" /var/cron/tabs/root
   check_mode: false
   register: root_crontab_content
   failed_when: false
