@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.8.1] - 2020-10-26
+
+### Fixed
+
+- Fix a task using a register where simple quotes prevented the register to be properly filled, breaking the following task
+
 ## [6.8.0] - 2020-10-23
 
 ### Added
