@@ -1,0 +1,27 @@
+---
+- name: Install logsentry
+  openbsd_pkg:
+    name:
+      - logsentry--
+    state: present
+  tags:
+    - logsentry
+
+- name: Copy logsentry script to /usr/share/scripts
+  copy:
+    src: logsentry.sh.j2
+    dest: /usr/share/scripts/logsentry.sh
+    owner: root
+    group: wheel
+    mode: "0644"
+  tags:
+    - logsentry
+
+- name: hourly cron job for logsentry.sh is installed
+  cron:
+    name: logsentry
+    minute: "11"
+    job: >
+      /bin/sh /usr/share/scripts/logsentry.sh
+  tags:
+    - logsentry
