@@ -9,7 +9,7 @@
 
 - name: Copy logsentry script to /usr/share/scripts
   copy:
-    src: logsentry.sh.j2
+    src: logsentry.sh
     dest: /usr/share/scripts/logsentry.sh
     owner: root
     group: wheel
