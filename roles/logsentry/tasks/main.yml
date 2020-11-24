@@ -17,6 +17,28 @@
   tags:
     - logsentry
 
+- name: Copy logsentry.ignore configuration
+  copy:
+    src: "{{ item }}"
+    dest: /etc/logsentry/logsentry.ignore
+  with_first_found:
+    - "files/logsentry/logsentry.ignore"
+    - "logsentry.ignore"
+  tags:
+    - logsentry
+    - config
+
+- name: Copy logsentry.violations.ignore configuration
+  copy:
+    src: "{{ item }}"
+    dest: /etc/logsentry/logsentry.violations.ignore
+  with_first_found:
+    - "files/logsentry/logsentry.violations.ignore"
+    - "logsentry.violations.ignore"
+  tags:
+    - logsentry
+    - config
+
 - name: hourly cron job for logsentry.sh is installed
   cron:
     name: logsentry
