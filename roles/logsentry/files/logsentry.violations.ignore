@@ -1,0 +1,7 @@
+stat=Deferred
+unbound:.*info: server stats for
+smtpd.*smtp connected address=127.0.0.1 host=localhost
+smtpd.*smtp connected address=local
+smtpd.*smtp disconnected reason=quit
+nrpe.*: INFO: SSL Socket Shutdown.
+collectd.*: exec plugin: Failed to execute
