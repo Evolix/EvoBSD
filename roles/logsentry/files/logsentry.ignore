@@ -50,18 +50,37 @@ x-gw.*: permit host
 xntpd.*Previous time adjustment didn't complete
 xntpd.*time reset
 ansible-command: Invoked
+ansible-copy: Invoked
+ansible-cron: Invoked
 ansible-file: Invoked
+ansible-openbsd_pkg: Invoked
 ansible-setup: Invoked
+ansible-slurp: Invoked
 ansible-stat: Invoked
 ansible-synchronize: Invoked
+bgpd.*: neighbor .*: sending IPv4 unicast EOR marker
+bgpd.*: neighbor .*: sending IPv6 unicast EOR marker
+bgpd.*: RDE reconfigured
+bgpd.*: RDE soft reconfiguration done
+bgpd.*: rereading config
+bgpd.*: running softreconfig in
+bgpd.*: SE reconfigured
+bgpd.*: softreconfig in done
 doas: _collectd ran command /bin/cat /var/log/daemon as root from /var/collectd
+doas: _collectd ran command /usr/sbin/bgpctl sh as root from /var/collectd
+doas: _collectd ran command /usr/sbin/bgpctl show neighbor as root from /var/collectd
+doas: _nrpe ran command /sbin/bioctl sd2 as root from /
 doas: _nrpe ran command /usr/local/libexec/nagios
 doas:.*ran command /usr/share/scripts/evomaintenance.sh as root from
+last message repeated .* times
+mownitoring.py: Alert sent through email
+mownitoring.py: Already known state but still a problem for
 newsyslog.*logfile turned over
 nrpe.*: Could not read request from client, bailing out...
 nrpe.*: Error: Could not complete SSL handshake.
 nrpe.*: INFO: SSL Socket Shutdown.
 ntpd.*: adjusting clock frequency by
+pkg_add: Added
 smtpd.*mta connected
 smtpd.*mta connecting address=smtp://
 smtpd.*mta delivery evpid=

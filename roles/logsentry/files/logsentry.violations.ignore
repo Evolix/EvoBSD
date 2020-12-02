@@ -3,5 +3,7 @@ unbound:.*info: server stats for
 smtpd.*smtp connected address=127.0.0.1 host=localhost
 smtpd.*smtp connected address=local
 smtpd.*smtp disconnected reason=quit
+smtpd.*smtp envelope evpid=
+smtpd.*smtp message msgid=
 nrpe.*: INFO: SSL Socket Shutdown.
 collectd.*: exec plugin: Failed to execute
