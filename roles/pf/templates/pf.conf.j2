@@ -12,7 +12,7 @@ ext_if="{{ ansible_default_ipv4.device }}"
 ###########################
 
 # Evolix
-table <evolix> { 88.179.18.233, 31.170.9.129, 31.170.8.4 }
+table <evolix> { {{ pf_trusted_ips }} }
 
 # Port en entrée
 # 2222 = ssh secondaire
