@@ -145,6 +145,8 @@ if [ "${LOCAL_TASKS}" = "1" ]; then
     # You can comment or uncomment sections below to customize the backup
 
     ## OpenLDAP : example with slapcat
+    # slapcat -n 0 -l ${LOCAL_BACKUP_DIR}/config.ldap.bak
+    # slapcat -n 1 -l ${LOCAL_BACKUP_DIR}/data.ldap.bak
     # slapcat -l ${LOCAL_BACKUP_DIR}/ldap.bak
 
     ## MySQL
@@ -403,6 +405,7 @@ if [ "${SYNC_TASKS}" = "1" ]; then
         --exclude "/var/log/evobackup*"                    \
         --exclude "/var/run"                               \
         --exclude "/var/spool/postfix"                     \
+        --exclude "/var/spool/smtpd"                       \
         --exclude "/var/spool/squid"                       \
         --exclude "/var/state"                             \
         --exclude "lxc/*/rootfs/usr/doc"                   \
