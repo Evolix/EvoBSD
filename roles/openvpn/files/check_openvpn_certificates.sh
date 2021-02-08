@@ -101,13 +101,13 @@ if [ "$SYSTEM" = "linux" ]; then
 elif [ "$SYSTEM" = "openbsd" ]; then
 
     # Cert expiration date for POSIX date, human formated then in seconds
-    posix_cert_expiration_date=$(echo "$cert_expiration_date" | awk '{ printf $4" "(index("JanFebMarAprMayJunJulAugSepOctNovDec",$1)+2)/3" "$2" ",split($3,time,":"); print time[1],time[2],time[3]}' | awk '{print $1$2$3$4$5"."$6}')
+    posix_cert_expiration_date=$(echo "$cert_expiration_date" | awk '{ printf $4" "(index("JanFebMarAprMayJunJulAugSepOctNovDec",$1)+2)/3" "$2" ",split($3,time,":"); print time[1],time[2],time[3]}' | awk '{printf "%04d%02d%02d%02d%02d.%02d\n", $1, $2, $3, $4, $5, $6}')
     cert_zone=$(echo "$cert_expiration_date" | awk '{print $5}')
     formatted_cert_expiration_date=$(TZ=$cert_zone $date_cmd -j -z "Europe/Paris" "$posix_cert_expiration_date" +"%F %T %Z")
     seconds_cert_expiration_date=$(TZ=$cert_zone $date_cmd -j -z "Europe/Paris" "$posix_cert_expiration_date" +"%s")
 
     # CA expiration date for POSIX date, human formated then in seconds
-    posix_ca_expiration_date=$(echo "$ca_expiration_date" | awk '{ printf $4" "(index("JanFebMarAprMayJunJulAugSepOctNovDec",$1)+2)/3" "$2" ",split($3,time,":"); print time[1],time[2],time[3]}' | awk '{print $1$2$3$4$5"."$6}')
+    posix_ca_expiration_date=$(echo "$ca_expiration_date" | awk '{ printf $4" "(index("JanFebMarAprMayJunJulAugSepOctNovDec",$1)+2)/3" "$2" ",split($3,time,":"); print time[1],time[2],time[3]}' | awk '{printf "%04d%02d%02d%02d%02d.%02d\n", $1, $2, $3, $4, $5, $6}')
     ca_zone=$(echo "$ca_expiration_date" | awk '{print $5}')
     formatted_ca_expiration_date=$(TZ=$ca_zone $date_cmd -j -z "Europe/Paris" "$posix_ca_expiration_date" +"%F %T %Z")
     seconds_ca_expiration_date=$(TZ=$ca_zone $date_cmd -j -z "Europe/Paris" "$posix_ca_expiration_date" +"%s")
