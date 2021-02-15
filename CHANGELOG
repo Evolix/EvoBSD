@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 - Fix the check_mem command in the NRPE role, precising the percentage sign for it not to check the memory in MB.
 - Fix the check_mem script in the NRPE role, adding cached RAM as free RAM
+- Fix motd-carp-state.sh by updating the OpenBSD release in our customized motd after an upgrade
 
 ### Changed
 
