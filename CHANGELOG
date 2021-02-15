@@ -7,7 +7,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
-## [6.8.3] - 2021-02-08
+## [6.8.3] - 2021-02-15
 
 ### Added
 
@@ -16,7 +16,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
-- Fix the check_mem in the NRPE role, precising the percentage sign for it not to check the memory in MB.
+- Fix the check_mem command in the NRPE role, precising the percentage sign for it not to check the memory in MB.
+- Fix the check_mem script in the NRPE role, adding cached RAM as free RAM
 
 ### Changed
 
