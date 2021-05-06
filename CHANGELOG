@@ -7,6 +7,41 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [6.9.0] - 2021-05-06
+
+### Changed
+
+- Remove the variable VERBOSESTATUS in daily.local configuration file since it is no longer valid.
+
+## [6.8.3] - 2021-02-15
+
+### Added
+
+- Add a customization of the logsentry configuration
+- Add a check_openvpn_certificates in NRPE and OpenVPN role to check expiration date of server CA and certificates files
+
+### Fixed
+
+- Fix the check_mem command in the NRPE role, precising the percentage sign for it not to check the memory in MB.
+- Fix the check_mem script in the NRPE role, adding cached RAM as free RAM
+- Fix motd-carp-state.sh by updating the OpenBSD release in our customized motd after an upgrade
+
+### Changed
+
+- The PF role now use a variable for trusted IPs
+
+## [6.8.2] - 2020-10-30
+
+### Added
+
+- Add a Logsentry role
+
+## [6.8.1] - 2020-10-26
+
+### Fixed
+
+- Fix a task using a register where simple quotes prevented the register to be properly filled, breaking the following task
+
 ## [6.8.0] - 2020-10-23
 
 ### Added

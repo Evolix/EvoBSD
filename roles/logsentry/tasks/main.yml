@@ -1,0 +1,49 @@
+---
+- name: Install logsentry
+  openbsd_pkg:
+    name:
+      - logsentry--
+    state: present
+  tags:
+    - logsentry
+
+- name: Copy logsentry script to /usr/share/scripts
+  copy:
+    src: logsentry.sh
+    dest: /usr/share/scripts/logsentry.sh
+    owner: root
+    group: wheel
+    mode: "0644"
+  tags:
+    - logsentry
+
+- name: Copy logsentry.ignore configuration
+  copy:
+    src: "{{ item }}"
+    dest: /etc/logsentry/logsentry.ignore
+  with_first_found:
+    - "files/logsentry/logsentry.ignore"
+    - "logsentry.ignore"
+  tags:
+    - logsentry
+    - config
+
+- name: Copy logsentry.violations.ignore configuration
+  copy:
+    src: "{{ item }}"
+    dest: /etc/logsentry/logsentry.violations.ignore
+  with_first_found:
+    - "files/logsentry/logsentry.violations.ignore"
+    - "logsentry.violations.ignore"
+  tags:
+    - logsentry
+    - config
+
+- name: hourly cron job for logsentry.sh is installed
+  cron:
+    name: logsentry
+    minute: "11"
+    job: >
+      /bin/sh /usr/share/scripts/logsentry.sh
+  tags:
+    - logsentry

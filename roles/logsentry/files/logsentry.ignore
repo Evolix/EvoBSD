@@ -1,0 +1,100 @@
+authsrv.*AUTHENTICATE
+cron.*CMD
+cron.*RELOAD
+cron.*STARTUP
+ftp-gw.*: exit host
+ftp-gw.*: permit host
+ftpd.*ANONYMOUS FTP LOGIN
+ftpd.*FTP LOGIN FROM
+ftpd.*retrieved
+ftpd.*stored
+http-gw.*: exit host
+http-gw.*: permit host
+mail.local
+named.*Lame delegation
+named.*Response from
+named.*answer queries
+named.*points to a CNAME
+named.*reloading
+named.*starting
+netacl.*: exit host
+netacl.*: permit host
+popper.*Unable
+popper: -ERR POP server at
+popper: -ERR Unknown command: "uidl".
+qmail.*new msg
+qmail.*info msg
+qmail.*starting delivery
+qmail.*delivery
+qmail.*end msg
+rlogin-gw.*: exit host
+rlogin-gw.*: permit host
+sendmail.*User Unknown
+sendmail.*alias database.*rebuilt
+sendmail.*aliases.*longest
+sendmail.*from=
+sendmail.*lost input channel
+sendmail.*message-id=
+sendmail.*putoutmsg
+sendmail.*return to sender
+sendmail.*stat=
+sendmail.*timeout waiting
+smap.*host=
+smapd.*daemon running
+smapd.*delivered
+telnetd.*ttloop:  peer died
+tn-gw.*: exit host
+tn-gw.*: permit host
+x-gw.*: exit host
+x-gw.*: permit host
+xntpd.*Previous time adjustment didn't complete
+xntpd.*time reset
+ansible-command: Invoked
+ansible-copy: Invoked
+ansible-cron: Invoked
+ansible-file: Invoked
+ansible-openbsd_pkg: Invoked
+ansible-setup: Invoked
+ansible-slurp: Invoked
+ansible-stat: Invoked
+ansible-synchronize: Invoked
+bgpd.*: neighbor .*: sending IPv4 unicast EOR marker
+bgpd.*: neighbor .*: sending IPv6 unicast EOR marker
+bgpd.*: RDE reconfigured
+bgpd.*: RDE soft reconfiguration done
+bgpd.*: rereading config
+bgpd.*: running softreconfig in
+bgpd.*: SE reconfigured
+bgpd.*: softreconfig in done
+doas: _collectd ran command /bin/cat /var/log/daemon as root from /var/collectd
+doas: _collectd ran command /usr/sbin/bgpctl sh as root from /var/collectd
+doas: _collectd ran command /usr/sbin/bgpctl show neighbor as root from /var/collectd
+doas: _nrpe ran command /sbin/bioctl sd2 as root from /
+doas: _nrpe ran command /usr/local/libexec/nagios
+doas:.*ran command /usr/share/scripts/evomaintenance.sh as root from
+last message repeated .* times
+mownitoring.py: Alert sent through email
+mownitoring.py: Already known state but still a problem for
+newsyslog.*logfile turned over
+nrpe.*: Could not read request from client, bailing out...
+nrpe.*: Error: Could not complete SSL handshake.
+nrpe.*: INFO: SSL Socket Shutdown.
+ntpd.*: adjusting clock frequency by
+pkg_add: Added
+smtpd.*mta connected
+smtpd.*mta connecting address=smtp://
+smtpd.*mta delivery evpid=
+smtpd.*mta disconnected reason=quit messages=
+smtpd.*mta server-cert-check result=
+smtpd.*mta tls ciphers=
+smtpd.*smtp connected address=127.0.0.1 host=localhost
+smtpd.*smtp connected address=local
+smtpd.*smtp disconnected reason=quit
+smtpd.*smtp envelope evpid=
+smtpd.*smtp message msgid=
+sshd.*Connection closed by 127.0.0.1 port
+sshd.*Connection reset by 127.0.0.1 port
+sudo:.*: a password is required ; TTY=.* ; PWD=/home/.* ; USER=root ; COMMAND=
+sudo:.*: TTY=.* ; PWD=/home/.* ; USER=root ; COMMAND=
+syslogd.*restart
+unbound:.*info:

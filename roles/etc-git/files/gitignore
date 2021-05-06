@@ -1,3 +1,4 @@
 aliases.db
 *.swp
 random.seed
+openvpn/ipp.txt

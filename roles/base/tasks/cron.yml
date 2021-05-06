@@ -6,14 +6,3 @@
     value: "{{ cron_root_path }}"
   tags:
     - cron
-
-- name: Customize daily.local environment
-  lineinfile:
-    path: /etc/daily.local
-    line: 'VERBOSESTATUS=0'
-    insertbefore: BOF
-    owner: root
-    mode: "0644"
-    create: true
-  tags:
-    - cron

@@ -5,6 +5,8 @@ if [ ! -f /etc/motd-original ]; then
 fi
 
 if [ ! -f /tmp/carp.state ]; then
+    # Replace OpenBSD version in motd after each boot for it to be up to date after an upgrade
+    sed -i "1 s/^.*$/$(head -1 \/var\/run\/dmesg.boot)/" /etc/motd-original
     echo "unknown" > /tmp/carp.state
 fi
 
