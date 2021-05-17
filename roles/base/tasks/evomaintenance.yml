@@ -15,10 +15,10 @@
     dest: "{{ item.dest }}"
     owner: 'root'
     group: 'wheel'
-    mode: '0755'
+    mode: '{{ item.mode }}'
   with_items:
-    - {src: 'evomaintenance.sh', dest: '/usr/share/scripts/'}
-    - {src: 'evomaintenance.tpl', dest: '/usr/share/scripts/'}
+    - {src: 'evomaintenance.sh', dest: '/usr/share/scripts/', mode: '0700'}
+    - {src: 'evomaintenance.tpl', dest: '/usr/share/scripts/', mode: '0600'}
   tags:
     - evomaintenance
     - script-evomaintenance
