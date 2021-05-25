@@ -16,7 +16,7 @@ CA_ECHO=""
 
 error() {
     if [ $? -eq 2 ] && [ "X$CERT_ECHO" = "X" ] && [ "X$CA_ECHO" = "X" ] ; then
-        echo "CRITICAL - The check exited with an error. Is the conf_file var containing the real conf file location ?"
+        echo "CRITICAL - The check exited with an error. Is the conf_file var containing the real conf file location ? On Debian, is the check executed with sudo ?"
     fi
 }
 
