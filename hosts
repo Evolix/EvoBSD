@@ -1,5 +1,5 @@
 [openbsd]
-foo.example.com
+foo.example.com ansible_host=192.0.2.1
 
 [openbsd:vars]
-ansible_python_interpreter=/usr/local/bin/python3
+ansible_python_interpreter=/usr/local/bin/python3.9
