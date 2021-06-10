@@ -29,7 +29,7 @@ _30_days="2592000"
 current_date=$($date_cmd +"%s")
 
 # Trying to define the OpenVPN conf file location - default to /etc/openvpn/server.conf
-conf_file=$(ps auwwwx | grep openvpn | grep -- --config | grep -v sed | sed -e "s/.*config \(\/etc\/openvpn.*.conf\).*/\1/")
+conf_file=$(ps auwwwx | grep openvpn | grep -- --config | grep -v sed | sed -e "s/.*config \(\/etc\/openvpn.*.conf\).*/\1/" | head -1)
 [ "$SYSTEM" = "openbsd" ] && conf_file=${conf_file:-$(grep openvpn_flags /etc/rc.conf.local | sed -e "s/.*config \(\/etc\/openvpn.*.conf\).*/\1/")}
 conf_file=${conf_file:-"/etc/openvpn/server.conf"}
 
