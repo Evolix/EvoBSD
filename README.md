@@ -1,4 +1,4 @@
-# EvoBSD 6.9.0
+# EvoBSD 6.9.1
 
 EvoBSD is an ansible project used for customising OpenBSD hosts
 used by Evolix.

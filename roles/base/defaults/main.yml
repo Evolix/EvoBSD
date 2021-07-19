@@ -1,6 +1,5 @@
 ---
-ntpd_servers:
-  - "ntp.evolix.net"
+ntpd_servers: "ntp.evolix.net"
 
 general_alert_email: "root@localhost"
 general_technical_realm: "example.com"

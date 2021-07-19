@@ -1,0 +1,29 @@
+---
+- name: Retrieve ntpd.conf content
+  command: cat ntpd.conf
+  args: 
+    chdir: /etc/
+  register: ntpd_conf
+  tags:
+    - ntp
+
+- name: Empty ntpd.conf before customizing it
+  file:
+    path: /etc/ntpd.conf
+    state: absent
+  when: ntpd_conf.stdout is not regex("^server ntp.evolix.net$")
+  tags:
+    - ntp
+
+- name: Customize ntpd conf
+  lineinfile:
+    path: /etc/ntpd.conf
+    line: "server {{ ntpd_servers }}"
+    create: yes
+    owner: root
+    group: wheel
+    mode: '0644'
+  notify:
+    - reload ntp
+  tags:
+    - ntp

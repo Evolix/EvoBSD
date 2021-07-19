@@ -3,8 +3,7 @@
 ## Edit and uncomment to overwrite the default values ##
 ########################################################
 
-# ntpd_servers:
-# - "ntp.evolix.net"
+# ntpd_servers: "pool.ntp.org"
 #
 # general_alert_email: "root@localhost"
 # general_technical_realm: "example.com"

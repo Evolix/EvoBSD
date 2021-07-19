@@ -31,3 +31,8 @@
   command: mount -u -o noatime /home
   args:
     warn: false
+
+- name: reload ntp
+  service:
+    name: ntpd
+    state: restarted
