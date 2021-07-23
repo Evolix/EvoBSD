@@ -6,7 +6,6 @@ permit nopass _collectd as root cmd /bin/cat
 permit nopass _collectd as root cmd /usr/sbin/bgpctl
 permit nopass _nrpe as root cmd /sbin/bioctl args sd2
 permit nopass _nrpe as root cmd /usr/local/libexec/nagios/check_mailq
-permit nopass _nrpe as root cmd /usr/local/libexec/nagios/check_dhcp
 permit nopass _nrpe as root cmd /usr/local/libexec/nagios/plugins/check_ipsecctl.sh
 permit nopass _nrpe as root cmd /usr/local/libexec/nagios/plugins/check_ospfd_simple
 permit nopass _nrpe as root cmd /usr/local/libexec/nagios/plugins/check_ospfd
