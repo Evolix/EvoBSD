@@ -56,6 +56,7 @@
     - {name: 'check_ospfd_simple', force: true}
     - {name: 'check_packetfilter.sh', force: true}
     - {name: 'check_pf_states', force: false}
+    - {name: 'check_mailq.pl', force: true}
   notify: restart nrpe
 
 - name: Nagios plugins are installed - template
