@@ -114,7 +114,7 @@ check_noatime(){
 }
 
 check_tmoutprofile(){
-    if [ -f /etc/skel/.profile ]
+    if [ -f /etc/skel/.profile ]; then
         grep -q TMOUT= /etc/skel/.profile /root/.profile || failed "IS_TMOUTPROFILE" "In order to fix, add 'export TMOUT=36000' to both /etc/skel/.profile and /root/.profile files"
     else
         failed "IS_TMOUTPROFILE" "File /etc/skel/.profile does not exist. Both /etc/skel/.profile and /root/.profile should contain at least 'export TMOUT=36000'"
