@@ -3,6 +3,7 @@
   command: cat ntpd.conf
   args: 
     chdir: /etc/
+  check_mode: no
   register: ntpd_conf
   tags:
     - ntp
