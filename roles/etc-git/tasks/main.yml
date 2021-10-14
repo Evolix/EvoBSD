@@ -118,7 +118,7 @@
 - name: hourly cron job for /etc/.git status is installed
   cron:
     name: git status
-    minute: 42
+    minute: "42"
     job: >
       who
       > /dev/null
