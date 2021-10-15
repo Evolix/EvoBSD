@@ -50,6 +50,7 @@
     - {name: 'check_carp_if', force: true}
     - {name: 'check_connections_state.sh', force: false}
     - {name: 'check_ipsecctl.sh', force: false}
+    - {name: 'check_ipsecctl_critiques.sh', force: false}
     - {name: 'check_openbgpd', force: true}
     - {name: 'check_openvpn', force: false}
     - {name: 'check_openvpn.pl', force: true}
