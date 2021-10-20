@@ -1,5 +1,9 @@
 #!/bin/sh
 
+# Use : ./check_ipsecctl_critiques.sh
+# check_ipsecctl.sh must be installed
+# Do not forget to also set variables under "Additional check with ping" : $VPNS + Definition of destination IPs + IPs in "case $vpn in"
+
 # Variables
 
 CHECK_IPSECCTL="/usr/local/libexec/nagios/check_ipsecctl.sh"
