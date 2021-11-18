@@ -3,14 +3,15 @@
 # Use : ./check_ipsecctl_critiques.sh
 # check_ipsecctl.sh must be installed
 # Do not forget to also set variables under "Additional check with ping" : $VPNS + Definition of destination IPs + IPs in "case $vpn in"
+# If needed, you can custom "local_ip" if the local IP used for ipsec is not the default one, or if multiples IP are use (e.g. "local_ip=192.0.2.[12]" if 192.0.2.1 and 192.0.2.2 are both used).
 
 # Variables
 
-CHECK_IPSECCTL="/usr/local/libexec/nagios/check_ipsecctl.sh"
+CHECK_IPSECCTL="/usr/local/libexec/nagios/plugins/check_ipsecctl.sh"
 STATUS=0
 VPN_KO=""
 
-default_int=$(route -n show | grep default | awk '{ print $8 }' | grep -v pppoe0)
+default_int=$(route -n show -inet | grep default | awk '{ print $8 }' | grep -v pppoe0)
 default_ip=$(ifconfig $default_int | grep inet | head -1 | awk '{ print $2 }')
 
 # No check if CARP backup
@@ -39,14 +40,14 @@ fi
 # Check with "ipsecctl -sa"
 
 for vpn in $(cat /etc/ipsec.conf | grep -v "^#" | awk '{print $2}'); do
-        vpn=$(basename $vpn .conf\")
-        local_ip=$default_ip
-        remote_ip=$(grep -E "remote_ip" /etc/ipsec/${vpn}.conf | grep -v "^#" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")
-        $CHECK_IPSECCTL $local_ip $remote_ip "$vpn" > /dev/null
-        if [ $? -ne 0 ]; then
-            STATUS=2
-            VPN_KO="$VPN_KO $vpn"
-        fi
+    vpn=$(basename $vpn .conf\")
+    local_ip=$default_ip
+    remote_ip=$(grep -E "remote_ip" /etc/ipsec/${vpn}.conf | grep -v "^#" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*")
+    $CHECK_IPSECCTL $local_ip $remote_ip "$vpn" > /dev/null
+    if [ $? -ne 0 ]; then
+        STATUS=2
+        VPN_KO="$VPN_KO $vpn"
+    fi
 done
 
 # Additional check with ping because "ipsecctl -sa" is not enough, only if previous checks didn't fail
