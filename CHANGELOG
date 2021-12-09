@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [7.0.0] - 2021-12-09
+
+### Changed
+
+- Configure locale to en_US.UTF-8 in .profile file so that "git log" displays the accents correctly
+- Use vim as default git editor
+
 ## [6.9.2] - 2021-10-15
 
 ### Added

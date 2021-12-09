@@ -44,6 +44,12 @@
   tags:
     - etc-git
 
+- name: Set vim as default editor
+  git_config:
+    name: core.editor
+    scope: global
+    value: vim
+
 - name: does /etc/ have any commit?
   command: "git log"
   args:
