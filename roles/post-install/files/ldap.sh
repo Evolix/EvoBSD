@@ -146,3 +146,15 @@ ServiceType: firewall
 ServiceVersion: packetfilter
 
 EOT
+
+if egrep -q 'sd.*RAID' /var/run/dmesg.boot; then
+cat<<EOT>>/root/${EvoComputerName}.ldif
+dn: ServiceName=bioctl,EvoComputerName=${EvoComputerName},ou=computer,dc=evolix,dc=net
+objectClass: EvoService
+NagiosEnabled: TRUE
+ServiceName: bioctl
+ServiceType: RAID
+ServiceVersion: RAID
+
+EOT
+fi

@@ -5,10 +5,11 @@
       - nrpe--
     state: present
 
-- name: Install monitoring-plugins
+- name: Install monitoring packages
   openbsd_pkg:
     name:
       - monitoring-plugins
+      - check_bioctl
     state: present
 
 - name: Create nrpe.d dir

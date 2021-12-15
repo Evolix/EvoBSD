@@ -33,6 +33,7 @@ command[check_unbound]=/usr/local/libexec/nagios/check_dig -l evolix.net -H loca
 command[check_mysql]=/usr/local/libexec/nagios/check_mysql -H 127.0.0.1 -f /etc/nrpe.d/.my.cnf
 #command[check_vpn]=/usr/local/libexec/nagios/check_ping -H IPDISTANTE -p 1 -w 5000,100% -c 5000,100%
 command[check_dhcpd]=/usr/local/libexec/nagios/check_procs -c1:1 -C dhcpd
+command[check_bioctl]=/usr/local/libexec/nagios/check_bioctl -d sd2
 
 # Local checks (not packaged)
 #command[check_openvpn]=/usr/local/libexec/nagios/plugins/check_openvpn.pl -H 127.0.0.1 -p 1195 -P PASSWORD

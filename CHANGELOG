@@ -5,14 +5,16 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-## [7.0.0] - 2021-12-09
+## [Unreleased - 7.0.0]
 
 ### Changed
 
 - Configure locale to en_US.UTF-8 in .profile file so that "git log" displays the accents correctly
 - Use vim as default git editor
+
+### Added
+
+- Add a bioctl NRPE check for RAID devices
 
 ## [6.9.2] - 2021-10-15
 
