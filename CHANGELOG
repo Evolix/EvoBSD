@@ -5,12 +5,23 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased - 7.0.0]
+## [Unreleased]
+
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## [21.12] - 2021-12-17
 
 ### Changed
 
 - Configure locale to en_US.UTF-8 in .profile file so that "git log" displays the accents correctly
 - Use vim as default git editor
+- Change version pattern and fix release scheme
 
 ### Added
 
