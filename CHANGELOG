@@ -7,6 +7,44 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+### Changed
+
+### Fixed
+
+### Removed
+
+## [21.12] - 2021-12-17
+
+### Changed
+
+- Configure locale to en_US.UTF-8 in .profile file so that "git log" displays the accents correctly
+- Use vim as default git editor
+- Change version pattern and fix release scheme
+
+### Added
+
+- Add a bioctl NRPE check for RAID devices
+
+## [6.9.2] - 2021-10-15
+
+### Added
+
+- Add a more complete ipsecctl check script
+- Add doas configuration for check_openvpn_certificates.sh
+
+### Fixed
+
+- Fix check_dhcpd for dhcpd server themselves : use back check_procs -c1: -C dhcpd
+- Fix check_mailq : check from monitoring-plugins current version is not compatible with opensmtpd
+
+## [6.9.1] - 2021-07-19
+
+### Added
+
+- Configure the ntpd.conf file
+
 ## [6.9.0] - 2021-05-06
 
 ### Changed

@@ -16,7 +16,7 @@ CA_ECHO=""
 
 error() {
     if [ $? -eq 2 ] && [ "X$CERT_ECHO" = "X" ] && [ "X$CA_ECHO" = "X" ] ; then
-        echo "CRITICAL - The check exited with an error. Is the conf_file var containing the real conf file location ?"
+        echo "CRITICAL - The check exited with an error. Is the conf_file var containing the real conf file location ? On Debian, is the check executed with sudo ?"
     fi
 }
 
@@ -29,7 +29,7 @@ _30_days="2592000"
 current_date=$($date_cmd +"%s")
 
 # Trying to define the OpenVPN conf file location - default to /etc/openvpn/server.conf
-conf_file=$(ps auwwwx | grep openvpn | grep -- --config | grep -v sed | sed -e "s/.*config \(\/etc\/openvpn.*.conf\).*/\1/")
+conf_file=$(ps auwwwx | grep openvpn | grep -- --config | grep -v sed | sed -e "s/.*config \(\/etc\/openvpn.*.conf\).*/\1/" | head -1)
 [ "$SYSTEM" = "openbsd" ] && conf_file=${conf_file:-$(grep openvpn_flags /etc/rc.conf.local | sed -e "s/.*config \(\/etc\/openvpn.*.conf\).*/\1/")}
 conf_file=${conf_file:-"/etc/openvpn/server.conf"}
 

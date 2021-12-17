@@ -21,7 +21,7 @@ command[check_smtp]=/usr/local/libexec/nagios/check_smtp -H localhost -f {{ gene
 command[check_dns]=/usr/local/libexec/nagios/check_dns -H evolix.net
 command[check_ntp]=/usr/local/libexec/nagios/check_ntp -H ntp-check.evolix.net
 command[check_ssh]=/usr/local/libexec/nagios/check_ssh -p 22 localhost
-command[check_mailq]=doas /usr/local/libexec/nagios/check_mailq -w 10 -c 20
+command[check_mailq]=doas /usr/local/libexec/nagios/plugins/check_mailq.pl -M opensmtpd -w 5 -c 10
 
 # Specific services checks
 command[check_imap]=/usr/local/libexec/nagios/check_imap -H localhost
@@ -32,20 +32,21 @@ command[check_unbound]=/usr/local/libexec/nagios/check_dig -l evolix.net -H loca
 #command[check_smb]=/usr/local/libexec/nagios/check_tcp -H IPLOCALE -p 445
 command[check_mysql]=/usr/local/libexec/nagios/check_mysql -H 127.0.0.1 -f /etc/nrpe.d/.my.cnf
 #command[check_vpn]=/usr/local/libexec/nagios/check_ping -H IPDISTANTE -p 1 -w 5000,100% -c 5000,100%
-#command[check_dhcpd]=doas /usr/local/libexec/nagios/check_dhcp -i INTERFACE -s IP -u
+command[check_dhcpd]=/usr/local/libexec/nagios/check_procs -c1:1 -C dhcpd
+command[check_bioctl]=/usr/local/libexec/nagios/check_bioctl -d sd2
 
 # Local checks (not packaged)
 #command[check_openvpn]=/usr/local/libexec/nagios/plugins/check_openvpn.pl -H 127.0.0.1 -p 1195 -P PASSWORD
 #command[check_openvpn]=/usr/local/libexec/nagios/plugins/check_openvpn # Wrapper of check_openvpn.pl, to use when the server is CARP backup and OpenVPN should not run
-command[check_openvpn_certificates]=/usr/local/libexec/nagios/plugins/check_openvpn_certificates.sh
-#command[check_carp1]=/usr/local/libexec/nagios/plugins/check_carp_if carp0 master
+command[check_openvpn_certificates]=doas /usr/local/libexec/nagios/plugins/check_openvpn_certificates.sh
+#command[check_carp0]=/usr/local/libexec/nagios/plugins/check_carp_if carp0 master
 command[check_mem]=/usr/local/libexec/nagios/plugins/check_free_mem.sh -w 20% -c 10%
 #command[check_vpn]=doas /usr/local/libexec/nagios/plugins/check_ipsecctl.sh IPDISTANTE IPLOCALE "VPN MARSEILLE-ROME"
 command[check_pf_states]=doas /usr/local/libexec/nagios/plugins/check_pf_states
 command[check_ospfd]=doas /usr/local/libexec/nagios/plugins/check_ospfd
 command[check_ospf6d]=doas /usr/local/libexec/nagios/plugins/check_ospf6d
 command[check_ospfd_simple]=doas /usr/local/libexec/nagios/plugins/check_ospfd_simple
-command[check_bgpd]=doas /usr/local/libexec/nagios/plugins/check_openbgpd -u
+#command[check_bgpd]=doas /usr/local/libexec/nagios/plugins/check_openbgpd -u
 command[check_connections_state]=doas /usr/local/libexec/nagios/plugins/check_connections_state.sh
 command[check_packetfilter]=doas /usr/local/libexec/nagios/plugins/check_packetfilter.sh
 

@@ -5,10 +5,11 @@
       - nrpe--
     state: present
 
-- name: Install monitoring-plugins
+- name: Install monitoring packages
   openbsd_pkg:
     name:
       - monitoring-plugins
+      - check_bioctl
     state: present
 
 - name: Create nrpe.d dir
@@ -50,12 +51,14 @@
     - {name: 'check_carp_if', force: true}
     - {name: 'check_connections_state.sh', force: false}
     - {name: 'check_ipsecctl.sh', force: false}
+    - {name: 'check_ipsecctl_critiques.sh', force: false}
     - {name: 'check_openbgpd', force: true}
     - {name: 'check_openvpn', force: false}
     - {name: 'check_openvpn.pl', force: true}
     - {name: 'check_ospfd_simple', force: true}
     - {name: 'check_packetfilter.sh', force: true}
     - {name: 'check_pf_states', force: false}
+    - {name: 'check_mailq.pl', force: true}
   notify: restart nrpe
 
 - name: Nagios plugins are installed - template

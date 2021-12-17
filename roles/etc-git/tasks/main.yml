@@ -44,6 +44,12 @@
   tags:
     - etc-git
 
+- name: Set vim as default editor
+  git_config:
+    name: core.editor
+    scope: global
+    value: vim
+
 - name: does /etc/ have any commit?
   command: "git log"
   args:
@@ -118,7 +124,7 @@
 - name: hourly cron job for /etc/.git status is installed
   cron:
     name: git status
-    minute: 42
+    minute: "42"
     job: >
       who
       > /dev/null
